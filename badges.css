@@ -1,0 +1,49 @@
+
+.attendee {
+	font-family: sans-serif;
+	width: 50%;
+	height: 100%;
+	float: left;
+	text-align: center;
+	page-break-before: avoid;
+	box-sizing: border-box;
+	border: 1px solid #ddd;
+}
+.attendee:nth-child(odd) {
+	page-break-before: always;
+	clear: left;
+}
+.attendee:nth-child(even) {
+
+}
+.attendee section {
+	padding: 5em 1em 1em;
+	box-sizing: border-box;
+	height: 50%;
+}
+.attendee section.back {
+	transform: rotate(180deg);
+	border-top: 1px dashed #888;
+}
+.attendee section header {
+
+}
+.attendee section header img {
+	max-width: 50%;
+}
+.attendee section header h1 {
+	margin: 0;
+}
+.attendee section figure {
+
+}
+.attendee section figure img {
+	max-width: 25%;
+	border-radius: 50%;
+}
+.attendee section figure figcaption {
+
+}
+.attendee section figure figcaption h3.name {
+	margin: 0;
+}
