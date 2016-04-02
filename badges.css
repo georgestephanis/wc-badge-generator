@@ -23,7 +23,6 @@ html, body {
 	text-align: center;
 	page-break-before: avoid;
 	box-sizing: border-box;
-	border: 1px solid #ddd;
 }
 .attendee:nth-of-type(odd) {
 	page-break-before: always;
