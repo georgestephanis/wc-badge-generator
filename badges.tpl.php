@@ -39,8 +39,11 @@
 		<article class="attendee">
 			<section class="back">
 				<header>
-					<?php if ( function_exists( 'jetpack_the_site_logo' ) ) jetpack_the_site_logo(); ?>
-					<h1><?php bloginfo( 'name' ); ?></h1>
+					<?php if ( has_custom_logo() ) : ?>
+						<?php the_custom_logo(); ?>
+					<?php else : ?>
+						<h1><?php bloginfo( 'name' ); ?></h1>
+					<?php endif; ?>
 				</header>
 				<figure>
 					<img src="<?php echo esc_url( $avatar ); ?>" />
@@ -51,8 +54,11 @@
 			</section>
 			<section class="front">
 				<header>
-					<?php if ( function_exists( 'jetpack_the_site_logo' ) ) jetpack_the_site_logo(); ?>
-					<h1><?php bloginfo( 'name' ); ?></h1>
+					<?php if ( has_custom_logo() ) : ?>
+						<?php the_custom_logo(); ?>
+					<?php else : ?>
+						<h1><?php bloginfo( 'name' ); ?></h1>
+					<?php endif; ?>
 				</header>
 				<figure>
 					<img src="<?php echo esc_url( $avatar ); ?>" />
