@@ -53,6 +53,7 @@
 				</figure>
 			</section>
 			<section class="front">
+				<div class="holepunch">&#9421;</div>
 				<header>
 					<?php if ( has_custom_logo() ) : ?>
 						<?php the_custom_logo(); ?>

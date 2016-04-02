@@ -20,10 +20,19 @@
 	padding: 5em 1em 1em;
 	box-sizing: border-box;
 	height: 50%;
+	position: relative;
 }
 .attendee section.back {
 	transform: rotate(180deg);
 	border-top: 1px dashed #888;
+}
+.attendee section .holepunch {
+	font-size: 0.7em;
+	text-align: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 5%;
 }
 .attendee section header {
 
