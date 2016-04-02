@@ -1,4 +1,9 @@
 
+html, body {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 .attendee {
 	font-family: sans-serif;
 	/*
@@ -20,15 +25,15 @@
 	box-sizing: border-box;
 	border: 1px solid #ddd;
 }
-.attendee:nth-child(odd) {
+.attendee:nth-of-type(odd) {
 	page-break-before: always;
 	clear: left;
 }
-.attendee:nth-child(even) {
-
+.attendee:nth-of-type(even) {
+	float: right;
 }
 .attendee section {
-	padding: 5em 1em 1em;
+	padding: 7em 1em 1em;
 	box-sizing: border-box;
 	height: 50%;
 	position: relative;
