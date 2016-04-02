@@ -1,8 +1,19 @@
 
 .attendee {
 	font-family: sans-serif;
-	width: 50%;
-	height: 100%;
+	/*
+	 * 8.5in page width,
+	 *  - 1in left margin,
+	 *  - 1in right margin,
+	 * All divided by two per page.
+	 */
+	width: 3.25in;
+	/*
+	 * 11in page height,
+	 *  - 1in top margin,
+	 *  - 1in bottom margin
+	 */
+	height: 9in;
 	float: left;
 	text-align: center;
 	page-break-before: avoid;
@@ -39,6 +50,7 @@
 }
 .attendee section header img {
 	max-width: 50%;
+	height: auto;
 }
 .attendee section header h1 {
 	margin: 0;
@@ -48,6 +60,7 @@
 }
 .attendee section figure img {
 	max-width: 25%;
+	height: auto;
 	border-radius: 50%;
 }
 .attendee section figure figcaption {
