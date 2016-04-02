@@ -20,9 +20,12 @@
 		echo esc_html__( 'No attendees found to make badges for.' ) . "\r\n</body>\r\n</html>";
 		return;
 	}
-
-	esc_html_e( 'Make sure to use Firefox to print these badges.  Some other browsers (like Chrome) don\'t respect some CSS properties that we use to specify where page breaks should be.' );
-
+?>
+	<p><?php esc_html_e( 'Make sure to use Firefox to print these badges.  Some other browsers (like Chrome) don\'t respect some CSS properties that we use to specify where page breaks should be.' ); ?></p>
+	<br /><br /><br />
+	<p><?php esc_html_e( 'Also please set your page margins to 0.5 inches the whole way around.  This is by default designed to be printed on US Standard 8.5in by 11in paper.'); ?></p>
+	<br /><br /><br />
+<?php
 	// Disable object cache for prepared metadata.
 	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );
 
