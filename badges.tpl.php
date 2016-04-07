@@ -3,7 +3,28 @@
 <html lang="en">
 <head>
 	<title><?php esc_html_e( 'WordCamp Badges' ); ?></title>
-	<link rel="stylesheet" href="<?php echo esc_url( plugins_url( 'badges.css', __FILE__ ) ); ?>" />
+	<style id="badges-css"></style>
+	<style>
+	html, body {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	#use-firefox,
+	#style-tweak {
+		padding: 1em 2em;
+	}
+	#style-tweak textarea {
+		width: 100%;
+		max-width: 45em;
+		height: 500px;
+		display: block;
+	}
+	@media print {
+		#style-tweak {
+			display: none;
+		}
+	}
+	</style>
 </head>
 <body>
 	<?php
@@ -21,7 +42,15 @@
 		return;
 	}
 ?>
-	<p><?php esc_html_e( 'Make sure to use Firefox to print these badges.  Some other browsers (like Chrome) don\'t respect some CSS properties that we use to specify where page breaks should be.' ); ?></p>
+	<p id="use-firefox"><?php esc_html_e( 'Make sure to use Firefox to print these badges.  Some other browsers (like Chrome) don\'t respect some CSS properties that we use to specify where page breaks should be.' ); ?></p>
+
+	<form id="style-tweak">
+		<label for="styletweak-css"><?php esc_html_e( 'You can modify the CSS for the badges here -- if you make a mistake, you can reset it back to the original markup.  Changes are not saved if you leave this page, so you may want to save them locally or on gist.github.com' ); ?></label>
+		<textarea id="style-tweak-css"></textarea>
+		<input id="style-tweak-update" type="submit" value="<?php esc_attr_e( 'Update' ); ?>" />
+		<input id="style-tweak-reset" type="reset" value="<?php esc_attr_e( 'Reset' ); ?>" />
+	</form>
+
 	<br /><br /><br />
 <?php
 	// Disable object cache for prepared metadata.
@@ -68,5 +97,54 @@
 			</section>
 		</article>
 	<?php endforeach; ?>
+
+	<script id="badges-css-original" type="text/css">
+		<?php readfile( dirname( __FILE__ ) . '/badges.css' ); ?>
+	</script>
+	<script>
+	(function(d){
+		var styleElement     = d.getElementById( 'badges-css' ),
+			stylesOriginal   = d.getElementById( 'badges-css-original' ).innerText.trim(),
+			styleTweak       = d.getElementById( 'style-tweak' ),
+			styleTweakCss    = d.getElementById( 'style-tweak-css' ),
+			styleTweakUpdate = d.getElementById( 'style-tweak-update' ),
+			styleTweakReset  = d.getElementById( 'style-tweak-reset' );
+
+		styleElement.textContent = stylesOriginal;
+		styleTweakCss.value      = stylesOriginal;
+
+		styleTweak.addEventListener( 'submit', function(e){
+			e.preventDefault();
+			styleElement.textContent = styleTweakCss.value;
+		});
+
+		styleTweak.addEventListener( 'reset', function(e){
+			e.preventDefault();
+			styleElement.textContent = stylesOriginal;
+			styleTweakCss.value      = stylesOriginal;
+		});
+
+		styleTweakCss.addEventListener( 'keydown', function(e) {
+		    if( e.keyCode === 9 ) { // tab was pressed
+		        // get caret position/selection
+		        var start  = this.selectionStart,
+		        	end    = this.selectionEnd,
+		        	target = e.target,
+		        	value  = target.value;
+
+		        // set textarea value to: text before caret + tab + text after caret
+		        target.value = value.substring( 0, start )
+		                    + '\t'
+		                    + value.substring( end );
+
+		        // put caret at right position again (add one for the tab)
+		        this.selectionStart = this.selectionEnd = start + 1;
+
+		        // prevent the focus lose
+		        e.preventDefault();
+		    }
+		} );
+	})(document);
+	</script>
 </body>
 </html>
