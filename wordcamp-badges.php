@@ -32,7 +32,8 @@ class WC_Badge_Generator {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		include( 'badges.tpl.php' );
+		
+		require_once( __DIR__ . '/views/badges.php' );
 		exit;
 	}
 }

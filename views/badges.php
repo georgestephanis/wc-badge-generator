@@ -107,7 +107,7 @@
 	<?php endforeach; ?>
 
 	<script id="badges-css-original" type="text/css">
-		<?php readfile( dirname( __FILE__ ) . '/badges.css' ); ?>
+		<?php readfile( dirname( __DIR__ ) . '/css/default-styles.css' ); ?>
 	</script>
 	<script>
 	(function(d){
