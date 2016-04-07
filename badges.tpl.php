@@ -13,11 +13,15 @@
 	#style-tweak {
 		padding: 1em 2em;
 	}
-	#style-tweak textarea {
+	#style-tweak textarea,
+	#style-tweak .CodeMirror {
 		width: 100%;
 		max-width: 45em;
 		height: 500px;
 		display: block;
+	}
+	#style-tweak .CodeMirror {
+		border: 1px solid #ccc;
 	}
 	@media print {
 		#style-tweak {
@@ -25,6 +29,10 @@
 		}
 	}
 	</style>
+	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
+		<script src="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js', JETPACK__PLUGIN_FILE ) ); ?>"></script>
+		<link rel="stylesheet" href="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE ) ); ?>">
+	<?php endif; ?>
 </head>
 <body>
 	<?php
@@ -113,16 +121,16 @@
 		styleElement.textContent = stylesOriginal;
 		styleTweakCss.value      = stylesOriginal;
 
-		styleTweak.addEventListener( 'submit', function(e){
-			e.preventDefault();
-			styleElement.textContent = styleTweakCss.value;
+		<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
+
+		var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
+			lineNumbers    : true,
+			tabSize        : 2,
+			indentWithTabs : true,
+			lineWrapping   : true
 		});
 
-		styleTweak.addEventListener( 'reset', function(e){
-			e.preventDefault();
-			styleElement.textContent = stylesOriginal;
-			styleTweakCss.value      = stylesOriginal;
-		});
+		<?php else : ?>
 
 		styleTweakCss.addEventListener( 'keydown', function(e) {
 		    if( e.keyCode === 9 ) { // tab was pressed
@@ -144,6 +152,24 @@
 		        e.preventDefault();
 		    }
 		} );
+
+		<?php endif; ?>
+
+		styleTweak.addEventListener( 'submit', function(e){
+			e.preventDefault();
+			styleElement.textContent = styleTweakCss.value;
+		});
+
+		styleTweak.addEventListener( 'reset', function(e){
+			e.preventDefault();
+			styleElement.textContent = stylesOriginal;
+			<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
+				cmEditor.setValue( stylesOriginal );
+			<?php else : ?>
+				styleTweakCss.value = stylesOriginal;
+			<?php endif; ?>
+		});
+
 	})(document);
 	</script>
 </body>
