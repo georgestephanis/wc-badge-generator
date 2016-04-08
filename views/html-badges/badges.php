@@ -1,4 +1,9 @@
-<?php global $camptix; ?>
+<?php
+
+namespace WordCamp\Badge_Generator\HTML;
+defined( 'WPINC' ) or die();
+
+global $camptix; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +112,7 @@
 	<?php endforeach; ?>
 
 	<script id="badges-css-original" type="text/css">
-		<?php readfile( dirname( __DIR__ ) . '/css/default-styles.css' ); ?>
+		<?php readfile( dirname( dirname( __DIR__ ) ) . '/css/html-badges.css' ); ?>
 	</script>
 	<script>
 	(function(d){
