@@ -2,8 +2,9 @@
 
 namespace WordCamp\Badge_Generator;
 
-class WordCamp_Badge_Generator extends \CampTix_Addon {     // todo rename b/c redundant within namespace?
+// todo what's the point of making it a camptix addon? it doesn't gain anything since it's not a payment oaddon
 
+class WordCamp_Badge_Generator extends \CampTix_Addon {     // todo rename b/c redundant within namespace?
 	// todo
 	public function __construct() {
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
@@ -17,27 +18,13 @@ class WordCamp_Badge_Generator extends \CampTix_Addon {     // todo rename b/c r
 			__( 'Badges' ),
 			'manage_options',
 			'attendee_badges',
-			array( __CLASS__, 'badges_page' )   // todo can probably find something better that retuns an empty string or something
+			'strstr'
+
+			// todo link to customize.php instead
+			// todo add a link like that for site cloner too
 		);
 
-		// todo just link to customizer
-
-		add_action( "load-{$hook}", array( __CLASS__, 'show_badges' ) );    // todo use template_include filter instead
-	}
-
-	// todo
-	public static function badges_page() {
-		echo 'Hrm, something went wrong.  You shouldn\'t have gotten this far!';
-		// todo remove
-	}
-
-	// todo
-	public static function show_badges() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		require_once( dirname( __DIR__ ) . '/views/badges.php' );
-		exit;
+		// todo just link to customizer for now. when add indesign, have a page that shows both options and explains them, and links to both.
+		// indesign will just need a screen to pick options then push button to generate file to download, also display instructions for indesign data merge
 	}
 }
