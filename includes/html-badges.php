@@ -3,7 +3,7 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-add_action( 'customize_register', __NAMESPACE__ . '\register_customizer_components', 11 );  // todo tmp priority
+add_action( 'customize_register', __NAMESPACE__ . '\register_customizer_components' );
 add_filter( 'template_include',   __NAMESPACE__ . '\render_html_badges'             );
 
 /**
@@ -15,24 +15,12 @@ function register_customizer_components( $wp_customize ) {
 	// todo add checkbox to include twitter, etc
 	// todo use new 4.5 live refresh
 
-	$wp_customize->add_panel(
-		'panel_camptix_html_badges',
-		array(
-			'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
-			'title'       => __( 'CampTix HTML Badges', 'wordcamporg' ),
-			'description' => __( 'Create personalized badges for attendees to wear.', 'wordcamporg' ),
-			// todo not being used
-		)
-	);
-
-	// todo need a section? how to make it open by default?
 	$wp_customize->add_section(
-		'section_camptix_html_badges',  //todo name?
+		'section_camptix_html_badges',
 		array(
 			'capability'     => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
-			'title'          => __( 'Foo', 'wordcamporg' ),
-			'description'    => 'foo section desc',
-			'panel'          => 'panel_camptix_html_badges',
+			'title'          => __( 'CampTix HTML Badges',                       'wordcamporg' ),
+			'description'    => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
 		)
 	);
 
@@ -43,7 +31,8 @@ function register_customizer_components( $wp_customize ) {
 			'type'              => 'option',
 			'capability'        => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
 			'transport'         => '',  //todo
-			'sanitize_callback' => 'esc_textarea',  // todo run through our custom stuff in jetpack-tweaks, but disable the admin notice
+			'sanitize_callback' => 'esc_textarea',
+			// todo esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
 		)
 	);
 
@@ -82,9 +71,8 @@ function render_html_badges( $template ) {
 	}
 
 	// dequeue all plugin/theme css and js - see coming soon page
-
 	// todo enqueue scripts
+	// or maybe just directly add it to markup b/c this is a special case
 	
 	return dirname( __DIR__ ) . '/views/html-badges/badges.php';
 }
-

@@ -13,7 +13,22 @@ defined( 'WPINC' ) or die();
  * display instructions for indesign data merge in contextual help
  */
 
-add_action( 'admin_menu', __NAMESPACE__ . '\add_admin_page' );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\register_scripts' );
+add_action( 'admin_menu',            __NAMESPACE__ . '\add_admin_page'   );
+
+/**
+ * Register common scripts and styles
+ */
+function register_scripts() {
+	// todo only enqueue on our pages
+	
+	wp_enqueue_style(
+		'camptix_badge_generator',
+		plugins_url( 'css/camptix-badge-generator.css', __DIR__ ),
+		array(),
+		1
+	);
+}
 
 /**
  * Register admin pages

@@ -1,0 +1,53 @@
+/*
+ * Common
+ */
+
+#cbg-method-overviews {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 30px;
+}
+
+	#cbg-method-overviews > div {
+		margin: 0 25px;
+	}
+
+/*
+ * HTML Badges
+ */
+
+/* todo tweak */
+#camptix-badge-generator,
+#camptix-badge-generator > body {
+	margin: 0 !important;
+	padding: 0 !important;
+	/* need !important? */
+}
+
+#use-firefox,
+#style-tweak {
+	padding: 1em 2em;
+}
+
+#style-tweak textarea,
+#style-tweak .CodeMirror {
+	width: 100%;
+	max-width: 45em;
+	height: 500px;
+	display: block;
+}
+
+#style-tweak .CodeMirror {
+	border: 1px solid #ccc;
+}
+
+@media print {
+	#style-tweak {
+		display: none;
+	}
+}
+
+
+/*
+ * InDesign Badges
+ */

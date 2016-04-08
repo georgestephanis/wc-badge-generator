@@ -4,39 +4,17 @@ namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
 // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
+// use get_header and get_footer? or at least call wp_head and wp_footer? maybe not b/c don't want scripts, etc
+// use doctype etc from twentysixteen
 
 /** @var $camptix CampTix_Plugin */
 global $camptix; ?>
 <!DOCTYPE html>
-<html lang="en">
+<html id="camptix-badge-generator" lang="en">
 <head>
 	<title><?php esc_html_e( 'CampTix Badges' ); ?></title>
 	<style id="badges-css"></style>
-	<style>
-	html, body {
-		margin: 0 !important;
-		padding: 0 !important;
-	}
-	#use-firefox,
-	#style-tweak {
-		padding: 1em 2em;
-	}
-	#style-tweak textarea,
-	#style-tweak .CodeMirror {
-		width: 100%;
-		max-width: 45em;
-		height: 500px;
-		display: block;
-	}
-	#style-tweak .CodeMirror {
-		border: 1px solid #ccc;
-	}
-	@media print {
-		#style-tweak {
-			display: none;
-		}
-	}
-	</style>
+	
 	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
 		<script src="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js', JETPACK__PLUGIN_FILE ) ); ?>"></script>
 		<link rel="stylesheet" href="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE ) ); ?>">
