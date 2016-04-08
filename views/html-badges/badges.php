@@ -3,6 +3,8 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
+// todo probabely break this up into differnt parts of name them like customizer-section.php, etc
+
 /** @var $camptix CampTix_Plugin */
 global $camptix; ?>
 <!DOCTYPE html>
