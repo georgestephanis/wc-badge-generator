@@ -1,6 +1,6 @@
 <?php
 
-namespace WordCamp\Badge_Generator\HTML;
+namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
 add_action( 'customize_register', __NAMESPACE__ . '\register_customizer_components' );

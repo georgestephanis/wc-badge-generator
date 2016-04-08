@@ -1,4 +1,4 @@
 <?php
 
-namespace WordCamp\Badge_Generator\InDesign;
+namespace CampTix\Badge_Generator\InDesign;
 defined( 'WPINC' ) or die();

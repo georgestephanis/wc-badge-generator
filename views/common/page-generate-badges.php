@@ -1,6 +1,6 @@
 <?php
 
-namespace WordCamp\Badge_Generator;
+namespace CampTix\Badge_Generator;
 defined( 'WPINC' ) or die();
 
 /*

@@ -1,6 +1,6 @@
 <?php
 
-namespace WordCamp\Badge_Generator;
+namespace CampTix\Badge_Generator;
 defined( 'WPINC' ) or die();
 
 // todo what's the point of making it a camptix addon? it doesn't gain anything since it's not a payment oaddon
@@ -8,7 +8,9 @@ defined( 'WPINC' ) or die();
 add_action( 'admin_menu', __NAMESPACE__ . '\add_admin_page' );
 
 // todo
-function admin_menu() {
+function add_admin_page() {
+	// todo new page,not under camptix ?
+
 	$hook = add_submenu_page(
 		'edit.php?post_type=tix_ticket',
 		__( 'Badges' ),
@@ -25,3 +27,4 @@ function admin_menu() {
 	// indesign will just need a screen to pick options then push button to generate file to download, also display instructions for indesign data merge
 }
 
+// todo v2 - let choose which ticket type, b/c will want diff badges for speaker/sponsor/organizer/attendee

@@ -1,13 +1,14 @@
 <?php
 
-namespace WordCamp\Badge_Generator\HTML;
+namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
+/** @var $camptix CampTix_Plugin */
 global $camptix; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title><?php esc_html_e( 'WordCamp Badges' ); ?></title>
+	<title><?php esc_html_e( 'CampTix Badges' ); ?></title>
 	<style id="badges-css"></style>
 	<style>
 	html, body {
