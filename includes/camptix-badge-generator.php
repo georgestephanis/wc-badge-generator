@@ -31,10 +31,13 @@ function add_admin_page() {
 	// indesign will just need a screen to pick options then push button to generate file to download, also display instructions for indesign data merge
 }
 
+// todo
 function render_admin_page() {
 	$html_customizer_url = admin_url( 'customize.php' );    // todo link directly to panel
 
 	if ( isset( $_GET['method'] ) && 'indesign' == $_GET['method'] ) {
+		$notify_tool_url = admin_url( 'edit.php?post_type=tix_ticket&page=camptix_tools&tix_section=notify' );
+
 		require_once( dirname( __DIR__ ) . '/views/indesign-badges/page-indesign-badges.php' );
 	} else {
 		$indesign_page_url = add_query_arg( 'method', 'indesign' );
