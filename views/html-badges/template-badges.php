@@ -3,23 +3,43 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-// todo probabely break this up into differnt parts of name them like customizer-section.php, etc
+?><!DOCTYPE html>
+<html id="camptix-badge-generator" <?php language_attributes(); ?>>
+
+<?php
+/*
+ // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
 // use get_header and get_footer? or at least call wp_head and wp_footer? maybe not b/c don't want scripts, etc
 // use doctype etc from twentysixteen
+*/
 
 /** @var $camptix CampTix_Plugin */
-global $camptix; ?>
-<!DOCTYPE html>
-<html id="camptix-badge-generator" lang="en">
+
+extract( get_template_variables() );    // todo bad? make sure don't overwrite globals. any way to
+
+?>
+
 <head>
-	<title><?php esc_html_e( 'CampTix Badges' ); ?></title>
-	<style id="badges-css"></style>
-	
+	<title><?php _e( 'CampTix Badges' ); ?></title>
+	<!-- todo have to set via wp to have show up in customerizer? -->
+
+		<meta charset="<?php bloginfo( 'charset' ); ?>">
+
+
+	<style id="badges-css">
+		/* Placeholder for dynamically-added styles */
+	</style>
+
+	<link rel="stylesheet" href="<?php echo esc_url( $cbg_page_css_url ); ?>">
+
 	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
+		<!-- todo create vars in caller -->
 		<script src="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js', JETPACK__PLUGIN_FILE ) ); ?>"></script>
 		<link rel="stylesheet" href="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE ) ); ?>">
 	<?php endif; ?>
 </head>
+
+
 <body>
 	<?php
 	$attendees = get_posts( array(

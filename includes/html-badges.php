@@ -3,8 +3,9 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-add_action( 'customize_register', __NAMESPACE__ . '\register_customizer_components' );
-add_filter( 'template_include',   __NAMESPACE__ . '\render_html_badges'             );
+add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts'                );
+add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'             );
 
 /**
  * Register our Customizer settings, panels, sections, and controls
@@ -18,9 +19,10 @@ function register_customizer_components( $wp_customize ) {
 	$wp_customize->add_section(
 		'section_camptix_html_badges',
 		array(
-			'capability'     => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
-			'title'          => __( 'CampTix HTML Badges',                       'wordcamporg' ),
-			'description'    => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
+			'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+			'title'       => __( 'CampTix HTML Badges',                       'wordcamporg' ),
+			'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
+			'type'        => 'cbgSection'
 		)
 	);
 
@@ -48,6 +50,20 @@ function register_customizer_components( $wp_customize ) {
 }
 
 // todo
+function enqueue_scripts() {
+	// todo only in customizer  -- is there another method for that?
+		// register here, but enqueue from somewhere else like site cloner?
+
+	wp_enqueue_script(
+		'camptix-html-badges',
+		plugins_url( 'javascript/html-badges.js', __DIR__ ),
+		array( 'jquery', 'customize-controls' ),
+		1,
+		true
+	);
+}
+
+// todo
 function render_html_badges( $template ) {
 	if ( ! isset( $_GET['camptix-badges'] ) ) {
 		return $template;
@@ -69,10 +85,15 @@ function render_html_badges( $template ) {
 	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
 		return $template;
 	}
-
-	// dequeue all plugin/theme css and js - see coming soon page
-	// todo enqueue scripts
-	// or maybe just directly add it to markup b/c this is a special case
 	
-	return dirname( __DIR__ ) . '/views/html-badges/badges.php';
+	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
+}
+
+//todo
+// explain have to be prefixed to avoid accidentally overriding globals
+function get_template_variables() {
+	$cbg_page_css_url = plugins_url( 'css/camptix-badge-generator.css', __DIR__ );
+
+	
+	return compact( 'cbg_page_css_url' );
 }

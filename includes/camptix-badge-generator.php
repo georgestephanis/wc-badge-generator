@@ -21,7 +21,7 @@ add_action( 'admin_menu',            __NAMESPACE__ . '\add_admin_page'   );
  */
 function register_scripts() {
 	// todo only enqueue on our pages
-	
+
 	wp_enqueue_style(
 		'camptix_badge_generator',
 		plugins_url( 'css/camptix-badge-generator.css', __DIR__ ),
@@ -51,7 +51,13 @@ function add_admin_page() {
  * Render admin pages
  */
 function render_admin_page() {
-	$html_customizer_url = admin_url( 'customize.php' );    // todo link directly to panel
+	$html_customizer_url = add_query_arg(
+		array(
+			'camptix-html-badges' => '',
+			'url'                 => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
+		),
+		admin_url( 'customize.php' )
+	);
 
 	if ( isset( $_GET['method'] ) && 'indesign' == $_GET['method'] ) {
 		$notify_tool_url = admin_url( 'edit.php?post_type=tix_ticket&page=camptix_tools&tix_section=notify' );
