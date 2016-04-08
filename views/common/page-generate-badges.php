@@ -16,7 +16,7 @@ defined( 'WPINC' ) or die();
 		); ?>
 	</p>
 
-	<!-- todo flexbox 50% width, half screen -->
+	<!-- todo flexbox 50% width, align next to each other -->
 	
 	<div id="html-badge-overview">
 		<h2><?php _e( 'HTML and CSS', 'wordcamporg' ); ?></h2>
@@ -68,5 +68,4 @@ defined( 'WPINC' ) or die();
 			esc_url( $notify_tool_url )
 		); ?>
 	</p>
-	<!-- todo encourage orgs to encourage attendees to sign up for gravatar before running this. check attendees shortcode output to see how many have gravatrs -->
 </div> <!-- .wrap -->

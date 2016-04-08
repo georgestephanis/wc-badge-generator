@@ -7,18 +7,22 @@ defined( 'WPINC' ) or die();
  * todo
  *
  *
- * v2 - let choose which ticket type, b/c will want diff badges for speaker/sponsor/organizer/attendee
- *
+ * v2
+ * let choose which ticket type, b/c will want diff badges for speaker/sponsor/organizer/attendee
+ * integrate indesign bin script. push button to generate zip file to download with CSV and gravatars
+ * display instructions for indesign data merge in contextual help
  */
 
 add_action( 'admin_menu', __NAMESPACE__ . '\add_admin_page' );
 
-// todo
+/**
+ * Register admin pages
+ */
 function add_admin_page() {
 	// todo put this under tools? but then it won't be seen? probably correct to put it there, but need documentation
         //  add to handbook, write post on make/comm	
 
-	$hook = add_submenu_page(
+	add_submenu_page(
 		'edit.php?post_type=tix_ticket',    // todo this should be slug instead of url?
 		__( 'Generate Badges', 'wordcamporg' ),
 		__( 'Generate Badges', 'wordcamporg' ),
@@ -26,12 +30,11 @@ function add_admin_page() {
 		'generate_badges',
 		__NAMESPACE__ . '\render_admin_page'
 	);
-
-	// todo just link to customizer for now. when add indesign, have a page that shows both options and explains them, and links to both.
-	// indesign will just need a screen to pick options then push button to generate file to download, also display instructions for indesign data merge
 }
 
-// todo
+/**
+ * Render admin pages
+ */
 function render_admin_page() {
 	$html_customizer_url = admin_url( 'customize.php' );    // todo link directly to panel
 
