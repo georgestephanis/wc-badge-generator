@@ -8,6 +8,7 @@ defined( 'WPINC' ) or die();
 
 <?php
 /*
+ * todo go through every line of this
  // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
 // use get_header and get_footer? or at least call wp_head and wp_footer? maybe not b/c don't want scripts, etc
 // use doctype etc from twentysixteen
@@ -15,7 +16,7 @@ defined( 'WPINC' ) or die();
 
 /** @var $camptix CampTix_Plugin */
 
-extract( get_template_variables() );    // todo bad? make sure don't overwrite globals. any way to
+extract( get_template_variables() );    // todo better way to do this? or maybe this is appropriate in this context
 
 ?>
 
@@ -26,16 +27,19 @@ extract( get_template_variables() );    // todo bad? make sure don't overwrite g
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 
 
-	<style id="badges-css">
+	
+	<!-- todo rename to better id -->
+	<style id="camptix-html-badges-css">
 		/* Placeholder for dynamically-added styles */
+		body { background-color: green };/*todo tmp */
 	</style>
 
 	<link rel="stylesheet" href="<?php echo esc_url( $cbg_page_css_url ); ?>">
 
 	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
 		<!-- todo create vars in caller -->
-		<script src="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js', JETPACK__PLUGIN_FILE ) ); ?>"></script>
-		<link rel="stylesheet" href="<?php echo esc_url( plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE ) ); ?>">
+		<script src="<?php echo esc_url( $cbg_codemirror_js_url ); ?>"></script>
+		<link rel="stylesheet" href="<?php echo esc_url( $cbg_codemirror_css_url ); ?>">
 	<?php endif; ?>
 </head>
 
@@ -43,13 +47,12 @@ extract( get_template_variables() );    // todo bad? make sure don't overwrite g
 <body>
 	<?php
 	$attendees = get_posts( array(
-								'post_type'      => 'tix_attendee',
-								'posts_per_page' => -1,
-								'post_status'    => array( 'publish', 'pending' ),
-								'orderby'        => 'title',
-								'fields'         => 'ids', // ! no post objects
-								'cache_results'  => false,
-							) );
+		'post_type'      => 'tix_attendee',
+		'posts_per_page' => -1,
+		'orderby'        => 'title',
+		'fields'         => 'ids', // ! no post objects
+		'cache_results'  => false,
+	) );
 
 	if ( ! is_array( $attendees ) || count( $attendees ) < 1 ) {
 		echo esc_html__( 'No attendees found to make badges for.' ) . "\r\n</body>\r\n</html>";
@@ -113,70 +116,73 @@ extract( get_template_variables() );    // todo bad? make sure don't overwrite g
 	<?php endforeach; ?>
 
 	<script id="badges-css-original" type="text/css">
-		<?php readfile( dirname( dirname( __DIR__ ) ) . '/css/html-badges.css' ); ?>
+		body { background-color: orange; } /* todo remove all this, but do need a way to reset. that could be v2 */
 	</script>
+
 	<script>
-	(function(d){
-		var styleElement     = d.getElementById( 'badges-css' ),
-			stylesOriginal   = d.getElementById( 'badges-css-original' ).innerText.trim(),
-			styleTweak       = d.getElementById( 'style-tweak' ),
-			styleTweakCss    = d.getElementById( 'style-tweak-css' ),
-			styleTweakUpdate = d.getElementById( 'style-tweak-update' ),
-			styleTweakReset  = d.getElementById( 'style-tweak-reset' );
+		(function(d){
+			/*
+			
+			var styleElement     = d.getElementById( 'camptix-html-badges-css' ),
+				stylesOriginal   = d.getElementById( 'badges-css-original' ).innerText.trim(),
+				styleTweak       = d.getElementById( 'style-tweak' ),
+				styleTweakCss    = d.getElementById( 'style-tweak-css' ),
+				styleTweakUpdate = d.getElementById( 'style-tweak-update' ),
+				styleTweakReset  = d.getElementById( 'style-tweak-reset' );
 
-		styleElement.textContent = stylesOriginal;
-		styleTweakCss.value      = stylesOriginal;
+			//styleElement.textContent = stylesOriginal;
+			styleTweakCss.value      = stylesOriginal;
 
-		<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
-
-		var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
-			lineNumbers    : true,
-			tabSize        : 2,
-			indentWithTabs : true,
-			lineWrapping   : true
-		});
-
-		<?php else : ?>
-
-		styleTweakCss.addEventListener( 'keydown', function(e) {
-		    if( e.keyCode === 9 ) { // tab was pressed
-		        // get caret position/selection
-		        var start  = this.selectionStart,
-		        	end    = this.selectionEnd,
-		        	target = e.target,
-		        	value  = target.value;
-
-		        // set textarea value to: text before caret + tab + text after caret
-		        target.value = value.substring( 0, start )
-		                    + '\t'
-		                    + value.substring( end );
-
-		        // put caret at right position again (add one for the tab)
-		        this.selectionStart = this.selectionEnd = start + 1;
-
-		        // prevent the focus lose
-		        e.preventDefault();
-		    }
-		} );
-
-		<?php endif; ?>
-
-		styleTweak.addEventListener( 'submit', function(e){
-			e.preventDefault();
-			styleElement.textContent = styleTweakCss.value;
-		});
-
-		styleTweak.addEventListener( 'reset', function(e){
-			e.preventDefault();
-			styleElement.textContent = stylesOriginal;
 			<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
-				cmEditor.setValue( stylesOriginal );
-			<?php else : ?>
-				styleTweakCss.value = stylesOriginal;
-			<?php endif; ?>
-		});
 
-	})(document);
+			var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
+				lineNumbers    : true,
+				tabSize        : 2,
+				indentWithTabs : true,
+				lineWrapping   : true
+			});
+
+			<?php else : ?>
+
+			styleTweakCss.addEventListener( 'keydown', function(e) {
+			    if( e.keyCode === 9 ) { // tab was pressed
+			        // get caret position/selection
+			        var start  = this.selectionStart,
+			            end    = this.selectionEnd,
+			            target = e.target,
+			            value  = target.value;
+
+			        // set textarea value to: text before caret + tab + text after caret
+			        target.value = value.substring( 0, start )
+			                    + '\t'
+			                    + value.substring( end );
+
+			        // put caret at right position again (add one for the tab)
+			        this.selectionStart = this.selectionEnd = start + 1;
+
+			        // prevent the focus lose
+			        e.preventDefault();
+			    }
+			} );
+
+			<?php endif; ?>
+
+			styleTweak.addEventListener( 'submit', function(e){
+				e.preventDefault();
+				styleElement.textContent = styleTweakCss.value;
+			});
+
+			styleTweak.addEventListener( 'reset', function(e){
+				e.preventDefault();
+				styleElement.textContent = stylesOriginal;
+				<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
+					cmEditor.setValue( stylesOriginal );
+				<?php else : ?>
+					styleTweakCss.value = stylesOriginal;
+				<?php endif; ?>
+			});
+			*/
+		})(document);
 	</script>
 </body>
 </html>

@@ -57,6 +57,8 @@ function render_admin_page() {
 			'url'                 => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
 		),
 		admin_url( 'customize.php' )
+
+		// todo set return url here and in js?
 	);
 
 	if ( isset( $_GET['method'] ) && 'indesign' == $_GET['method'] ) {

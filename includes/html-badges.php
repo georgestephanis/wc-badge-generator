@@ -13,7 +13,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'      
  * @param \WP_Customize_Manager $wp_customize
  */
 function register_customizer_components( $wp_customize ) {
-	// todo add checkbox to include twitter, etc
+	// todo add checkbox to include twitter, etc - v2
 	// todo use new 4.5 live refresh
 
 	$wp_customize->add_section(
@@ -39,14 +39,16 @@ function register_customizer_components( $wp_customize ) {
 	);
 
 	$wp_customize->add_control(
-		'setting_camptix_html_badge_css',
+		'setting_camptix_html_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel
 		array(
 			'type'        => 'textarea',
 			'section'     => 'section_camptix_html_badges',
 			'label'       => __( 'Customize CSS', 'wordcamporg' ),
 			'description' => 'foo instructions',
+			// todo add a ticket type css selector, and write inline documentation about it
 		)
 	);
+	// todo test that it saves modified css
 }
 
 // todo
@@ -92,8 +94,9 @@ function render_html_badges( $template ) {
 //todo
 // explain have to be prefixed to avoid accidentally overriding globals
 function get_template_variables() {
-	$cbg_page_css_url = plugins_url( 'css/camptix-badge-generator.css', __DIR__ );
-
+	$cbg_page_css_url       = plugins_url( 'css/camptix-badge-generator.css',                      __DIR__              );
+	$cbg_codemirror_js_url  = plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js',   JETPACK__PLUGIN_FILE );
+	$cbg_codemirror_css_url = plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE );
 	
-	return compact( 'cbg_page_css_url' );
+	return compact( 'cbg_page_css_url', 'cbg_codemirror_js_url', 'cbg_codemirror_css_url' );
 }

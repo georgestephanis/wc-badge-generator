@@ -1,5 +1,9 @@
 /* todo spruce up */
 
+body {
+	background-color: blue;
+}
+
 .attendee {
 	font-family: sans-serif;
 	/*
