@@ -7,12 +7,9 @@ defined( 'WPINC' ) or die();
 <html id="camptix-badge-generator" <?php language_attributes(); ?>>
 
 <head>
-	<title><?php _e( 'CampTix Badges' ); ?></title>
-	<!-- todo have to set via wp to have show up in customerizer? -->
+	<title><?php _e( 'CampTix HTML Badges', 'wordcamporg' ); ?></title>
 
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-
-	
 
 	<?php
 		/** @var $camptix \CampTix_Plugin */
@@ -20,6 +17,7 @@ defined( 'WPINC' ) or die();
 
 		/*
 		 * todo go through every line of this
+		 * todo more stuff from twentysixteen?
 		 // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
 		*/
 	?>

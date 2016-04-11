@@ -3,11 +3,11 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-add_action( 'customize_register',     __NAMESPACE__ . '\register_customizer_components' );
-add_action( 'admin_enqueue_scripts',  __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
-add_action( 'customize_preview_init', __NAMESPACE__ . '\enqueue_previewer_scripts'      );  // todo should just use wp_enqueue_scripts instead?
-add_filter( 'template_include',       __NAMESPACE__ . '\render_html_badges'             );
-add_action( 'wp_print_styles',        __NAMESPACE__ . '\print_saved_styles'             );
+add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',         998 );
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
+add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'             );
 
 /**
  * Register our Customizer settings, panels, sections, and controls
@@ -77,17 +77,38 @@ function enqueue_customizer_scripts() {
 }
 
 // todo
-function enqueue_previewer_scripts() {
+function is_badges_preview() {
+	global $wp_customize;
 
-	// Remove all other stylesheets
-		// todo does this have to be done at diff hook b/c prevenw_init too early?
-	foreach( $GLOBALS['wp_styles']->queue as $stylesheet ) { 
-		//wp_dequeue_style( $stylesheet );
+	return isset( $_GET['camptix-badges'] ) && $wp_customize->is_preview();
+}
+
+// todo
+// todo make dry w/ coming soon page?
+function remove_all_styles() {
+	global $wp_styles;
+
+	if ( ! is_badges_preview() ) {
+		return;
 	}
 
-	//remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
-	
-	// Add our scripts and stylesheets
+	foreach( $wp_styles->queue as $stylesheet ) {
+		wp_dequeue_style( $stylesheet );
+	}
+
+	remove_all_actions( 'wp_print_styles' );
+
+	remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
+
+	// todo remove remote-css?
+}
+
+// todo
+function enqueue_previewer_scripts() {
+	if ( ! is_badges_preview() ) {
+		return;
+	}
+
 	wp_register_script(
 		'camptix-html-badges-previewer',
 		plugins_url( 'javascript/html-badges-previewer.js', __DIR__ ),
@@ -110,13 +131,8 @@ function enqueue_previewer_scripts() {
 
 	wp_enqueue_script( 'camptix-html-badges-previewer' );
 	wp_enqueue_style( 'camptix-html-badges' );
-}
 
-// todo
-function is_badges_preview() {
-	global $wp_customize;
-
-	return isset( $_GET['camptix-badges'] ) && $wp_customize->is_preview();
+	add_action( 'wp_print_styles', __NAMESPACE__ . '\print_saved_styles' ); // done here so it is registered after remove_all_styles()
 }
 
 // todo

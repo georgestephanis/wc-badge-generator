@@ -28,6 +28,8 @@
 				// might need to be somewhere different than here, like onclick handler or something
 				// window.parent.location = ...;
 
+				// when navigating away from this section, need to refresh previewer w/out our URL, to add styles back etc
+
 				// add click handler on section, or maybe the API already provides a way for that
 					// maybe check section.expanded, listen for click event, override onChangeExpanded
 					// window.parent.location = 'https://2014.content.wordcamp.dev/wp-admin/customize.php?camptix-html-badges&url=https%3A%2F%2F2014.content.wordcamp.dev%3Fcamptix-badges';   // todo dynamic
