@@ -34,6 +34,30 @@
 			}
 		}
 	} );
+
+	/**
+	 * Custom control representing a site that can be previewed/imported
+	 */
+	api.controlConstructor.textarea = api.Control.extend( {
+		/**
+		 * Initialize the control after it's loaded
+		 */
+		ready : function() {
+			if ( 'setting_camptix_html_badge_css' !== this.id ) {
+				return;
+			}
+
+			/*
+				var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
+				lineNumbers    : true,
+				tabSize        : 2,
+				indentWithTabs : true,
+				lineWrapping   : true
+			});
+
+		 */
+		}
+	} );
 	
 	/**
 	 * todo make dry with site cloner?

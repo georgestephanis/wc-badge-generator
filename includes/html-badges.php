@@ -5,8 +5,9 @@ defined( 'WPINC' ) or die();
 
 add_action( 'customize_register',     __NAMESPACE__ . '\register_customizer_components' );
 add_action( 'admin_enqueue_scripts',  __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
-add_action( 'customize_preview_init', __NAMESPACE__ . '\enqueue_previewer_scripts'      );
+add_action( 'customize_preview_init', __NAMESPACE__ . '\enqueue_previewer_scripts'      );  // todo should just use wp_enqueue_scripts instead?
 add_filter( 'template_include',       __NAMESPACE__ . '\render_html_badges'             );
+add_action( 'wp_print_styles',        __NAMESPACE__ . '\print_saved_styles'             );
 
 /**
  * Register our Customizer settings, panels, sections, and controls
@@ -48,6 +49,9 @@ function register_customizer_components( $wp_customize ) {
 			// todo add a ticket type css selector, and write inline documentation about it
 		)
 	);
+	
+	// todo add button to reset to default css
+	
 	// todo test that it saves modified css
 }
 
@@ -78,7 +82,7 @@ function enqueue_previewer_scripts() {
 	// Remove all other stylesheets
 		// todo does this have to be done at diff hook b/c prevenw_init too early?
 	foreach( $GLOBALS['wp_styles']->queue as $stylesheet ) { 
-	//	wp_dequeue_style( $stylesheet );
+		//wp_dequeue_style( $stylesheet );
 	}
 
 	//remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
@@ -109,27 +113,47 @@ function enqueue_previewer_scripts() {
 }
 
 // todo
+function is_badges_preview() {
+	global $wp_customize;
+
+	return isset( $_GET['camptix-badges'] ) && $wp_customize->is_preview();
+}
+
+// todo
 function render_html_badges( $template ) {  // todo rename to more accurate
-	if ( ! isset( $_GET['camptix-badges'] ) ) {
+	if ( ! is_badges_preview() ) {
 		return $template;
 	}
 
-	/*
-	if ( 'customize.php' != basename( $_SERVER['SCRIPT_NAME'] ) && empty( $_REQUEST['wp_customize'] ) ) {
-		return array();
-	}
-	*/
+	// todo still need to detect if our panel
+		// no, just detect if url has query param, then when open panel, redirect customzeir frame to that url
 
-	if ( 'on' !== $_REQUEST['wp_customize'] ) {
-		//return $template;   // todo probably better way to detect if customizer
-
-		// todo still need to detect if our panel
-			// no, just detect if url has query param, then when open panel, redirect customzeir frame to that url
-	}
 
 	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
 		return $template;
 	}
 	
 	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
+}
+
+//todo
+function print_saved_styles() {
+	global $wp_customize;
+
+	if ( ! is_badges_preview() ) {
+		return;
+	}
+
+	// todo only on current page/section
+
+	// todo check if nothing saved, then use defaults
+	// todo enqueue default styles from wp, then overwrite automatically when js loads? or don't create at all and just let js do it, since have to remove anyway?
+	?>
+
+	<!-- todo rename to better id,update everywhere -->
+	<style id="camptix-html-badges-css" type="text/css">
+		<?php echo esc_html( $wp_customize->get_setting( 'setting_camptix_html_badge_css' )->value() ); // todo is this the correct escaping function? ?>
+	</style>
+
+	<?php
 }

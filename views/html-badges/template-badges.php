@@ -6,57 +6,51 @@ defined( 'WPINC' ) or die();
 ?><!DOCTYPE html>
 <html id="camptix-badge-generator" <?php language_attributes(); ?>>
 
-<?php
-/*
- * todo go through every line of this
- // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
-*/
-
-/** @var $camptix CampTix_Plugin */
-?>
-
 <head>
 	<title><?php _e( 'CampTix Badges' ); ?></title>
 	<!-- todo have to set via wp to have show up in customerizer? -->
 
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
+
 	
-	<!-- todo rename to better id -->
-	<style id="camptix-html-badges-css">
-		/* Placeholder for dynamically-added styles */
-		body { background-color: green };/*todo tmp */
-		/* todo enqueue default styles from wp, then overwrite automatically when js loads? or don't create at all and just let js do it, since have to remove anyway? */
-	</style>
 
-	<?php wp_head(); ?>
+	<?php
+		/** @var $camptix \CampTix_Plugin */
+		wp_head();
+
+		/*
+		 * todo go through every line of this
+		 // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
+		*/
+	?>
 </head>
-
 
 <body>
 	<?php
-	$attendees = get_posts( array(
-		'post_type'      => 'tix_attendee',
-		'posts_per_page' => -1,
-		'orderby'        => 'title',
-		'fields'         => 'ids', // ! no post objects
-		'cache_results'  => false,
-	) );
+		// todo do all this in a function so aren't in global space
 
-	if ( ! is_array( $attendees ) || count( $attendees ) < 1 ) {
-		echo esc_html__( 'No attendees found to make badges for.' ) . "\r\n</body>\r\n</html>";
-		return;
-	}
-?>
-	<p id="use-firefox"><?php esc_html_e( 'Make sure to use Firefox to print these badges.  Some other browsers (like Chrome) don\'t respect some CSS properties that we use to specify where page breaks should be.' ); ?></p>
+		$attendees = get_posts( array(
+			'post_type'      => 'tix_attendee',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'fields'         => 'ids', // ! no post objects
+			'cache_results'  => false,
+		) );
 
-	<form id="style-tweak">
-		<label for="styletweak-css"><?php esc_html_e( 'You can modify the CSS for the badges here -- if you make a mistake, you can reset it back to the original markup.  Changes are not saved if you leave this page, so you may want to save them locally or on gist.github.com' ); ?></label>
-		<textarea id="style-tweak-css"></textarea>
-		<input id="style-tweak-update" type="submit" value="<?php esc_attr_e( 'Update' ); ?>" />
-		<input id="style-tweak-reset" type="reset" value="<?php esc_attr_e( 'Reset' ); ?>" />
-	</form>
+		if ( ! is_array( $attendees ) || count( $attendees ) < 1 ) {
+			echo esc_html__( 'No attendees found to make badges for.' ) . "\r\n</body>\r\n</html>";
+			return;
+		}
+	?>
 
-	<br /><br /><br />
+	<p id="use-firefox">
+		<?php _e(
+			"Make sure to use Firefox to print these badges.
+			 Some other browsers (like Chrome) don't respect some CSS properties that we use to specify where page breaks should be.",
+			'wordcamporg'
+		); ?>
+	</p>
+
 <?php
 	// Disable object cache for prepared metadata.
 	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );
@@ -68,6 +62,7 @@ defined( 'WPINC' ) or die();
 		$email   = get_post_meta( $attendee_id, 'tix_email', true );
 		$avatar  = get_avatar_url( $email, array( 'size' => 600 ) );
 		?>
+
 		<article class="attendee">
 			<section class="back">
 				<header>
@@ -77,6 +72,7 @@ defined( 'WPINC' ) or die();
 						<h1><?php bloginfo( 'name' ); ?></h1>
 					<?php endif; ?>
 				</header>
+
 				<figure>
 					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
 					<figcaption>
@@ -84,6 +80,7 @@ defined( 'WPINC' ) or die();
 					</figcaption>
 				</figure>
 			</section>
+
 			<section class="front">
 				<div class="holepunch">&#9421;</div>
 				<header>
@@ -93,6 +90,7 @@ defined( 'WPINC' ) or die();
 						<h1><?php bloginfo( 'name' ); ?></h1>
 					<?php endif; ?>
 				</header>
+
 				<figure>
 					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
 					<figcaption>
@@ -102,76 +100,6 @@ defined( 'WPINC' ) or die();
 			</section>
 		</article>
 	<?php endforeach; ?>
-
-	<script id="badges-css-original" type="text/css">
-		body { background-color: orange; } /* todo remove all this, but do need a way to reset. that could be v2 */
-	</script>
-
-	<script>
-		(function(d){
-			/*
-			
-			var styleElement     = d.getElementById( 'camptix-html-badges-css' ),
-				stylesOriginal   = d.getElementById( 'badges-css-original' ).innerText.trim(),
-				styleTweak       = d.getElementById( 'style-tweak' ),
-				styleTweakCss    = d.getElementById( 'style-tweak-css' ),
-				styleTweakUpdate = d.getElementById( 'style-tweak-update' ),
-				styleTweakReset  = d.getElementById( 'style-tweak-reset' );
-
-			//styleElement.textContent = stylesOriginal;
-			styleTweakCss.value      = stylesOriginal;
-
-			<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
-
-			var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
-				lineNumbers    : true,
-				tabSize        : 2,
-				indentWithTabs : true,
-				lineWrapping   : true
-			});
-
-			<?php else : ?>
-
-			styleTweakCss.addEventListener( 'keydown', function(e) {
-			    if( e.keyCode === 9 ) { // tab was pressed
-			        // get caret position/selection
-			        var start  = this.selectionStart,
-			            end    = this.selectionEnd,
-			            target = e.target,
-			            value  = target.value;
-
-			        // set textarea value to: text before caret + tab + text after caret
-			        target.value = value.substring( 0, start )
-			                    + '\t'
-			                    + value.substring( end );
-
-			        // put caret at right position again (add one for the tab)
-			        this.selectionStart = this.selectionEnd = start + 1;
-
-			        // prevent the focus lose
-			        e.preventDefault();
-			    }
-			} );
-
-			<?php endif; ?>
-
-			styleTweak.addEventListener( 'submit', function(e){
-				e.preventDefault();
-				styleElement.textContent = styleTweakCss.value;
-			});
-
-			styleTweak.addEventListener( 'reset', function(e){
-				e.preventDefault();
-				styleElement.textContent = stylesOriginal;
-				<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
-					cmEditor.setValue( stylesOriginal );
-				<?php else : ?>
-					styleTweakCss.value = stylesOriginal;
-				<?php endif; ?>
-			});
-			*/
-		})(document);
-	</script>
 
 	<?php wp_footer(); ?>
 </body>

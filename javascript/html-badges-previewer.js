@@ -6,16 +6,11 @@
 	}
 
 	var api = wp.customize;
-	var removedCss = false; // todo include in above
+	var removedCss = false; // todo include in above        // todo rename?
 	
 	// todo add try/catch
 	// todo errors in dev console. unrelated?
 	// todo test in all browsers
-
-console.log('hi');
-	//updateCSS( wp.customize('setting_camptix_html_badge_css').get() );  // todo calling too soon?
-
-	// have php preload it w/ the customizer value instead of the default, so don't get flash unstyled content
 
 	api( 'setting_camptix_html_badge_css', function( value ) {
 		value.bind( function( newCSS ) {
@@ -27,6 +22,8 @@ console.log('hi');
 	function updateCSS( newCSS ) {
 		var badgeStyleElement = $( '#camptix-html-badges-css' );
 
+		// todo clean this up
+
 		if ( ! removedCss ) {
 			badgeStyleElement.remove();
 			$( '<style/>', {
@@ -34,14 +31,10 @@ console.log('hi');
 				id: 'camptix-html-badges-css'
 			} ).appendTo( 'head' );
 
-
 			removedCss = true;
+			badgeStyleElement = $( '#camptix-html-badges-css' );
 		}
 
-		console.log( newCSS );
-
-		//badgeStyleElement.text( newCSS );   // todo need to reget after removing it?
-		$( '#camptix-html-badges-css' ).text( newCSS ); // todo xss?
+		badgeStyleElement.text( newCSS ); // todo xss?
 	}
 } )( window.wp, jQuery );
-
