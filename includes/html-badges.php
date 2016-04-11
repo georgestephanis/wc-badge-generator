@@ -3,9 +3,10 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts'                );
-add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'             );
+add_action( 'customize_register',     __NAMESPACE__ . '\register_customizer_components' );
+add_action( 'admin_enqueue_scripts',  __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
+add_action( 'customize_preview_init', __NAMESPACE__ . '\enqueue_previewer_scripts'      );
+add_filter( 'template_include',       __NAMESPACE__ . '\render_html_badges'             );
 
 /**
  * Register our Customizer settings, panels, sections, and controls
@@ -32,14 +33,14 @@ function register_customizer_components( $wp_customize ) {
 			'default'           => file_get_contents( dirname( __DIR__ ) . '/css/html-badge-default-styles.css' ),
 			'type'              => 'option',
 			'capability'        => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
-			'transport'         => '',  //todo
+			'transport'         => 'postMessage',
 			'sanitize_callback' => 'esc_textarea',
 			// todo esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
 		)
 	);
 
 	$wp_customize->add_control(
-		'setting_camptix_html_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel
+		'setting_camptix_html_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel. need to update js too.
 		array(
 			'type'        => 'textarea',
 			'section'     => 'section_camptix_html_badges',
@@ -52,17 +53,32 @@ function register_customizer_components( $wp_customize ) {
 }
 
 // todo
-function enqueue_scripts() {
+function enqueue_customizer_scripts() {
 	// todo only in customizer  -- is there another method for that?
 		// register here, but enqueue from somewhere else like site cloner?
 
 	wp_enqueue_script(
-		'camptix-html-badges',
-		plugins_url( 'javascript/html-badges.js', __DIR__ ),
-		array( 'jquery', 'customize-controls' ),
+		'camptix-html-badges-customizer',
+		plugins_url( 'javascript/html-badges-customizer.js', __DIR__ ),
+		array( 'jquery', 'customize-controls' ),    // todo needs controls?
 		1,
 		true
 	);
+}
+
+// todo
+function enqueue_previewer_scripts() {
+	// todo only on our page
+
+	wp_enqueue_script(
+		'camptix-html-badges-previewer',
+		plugins_url( 'javascript/html-badges-previewer.js', __DIR__ ),
+		array( 'jquery',  'customize-preview', 'underscore' ),    // todo needs controls? needs underscore?
+		1,
+		true
+	);
+
+	// todo dequeue all plugin scripts/styles and theme styles
 }
 
 // todo
@@ -94,9 +110,13 @@ function render_html_badges( $template ) {
 //todo
 // explain have to be prefixed to avoid accidentally overriding globals
 function get_template_variables() {
+
+	// todo move all this to enqueue_previewer
+
+	$cbg_previewer_js_url   = plugins_url( 'javascript/html-badges-previewer.js',                  __DIR__              );
 	$cbg_page_css_url       = plugins_url( 'css/camptix-badge-generator.css',                      __DIR__              );
 	$cbg_codemirror_js_url  = plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js',   JETPACK__PLUGIN_FILE );
 	$cbg_codemirror_css_url = plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE );
 	
-	return compact( 'cbg_page_css_url', 'cbg_codemirror_js_url', 'cbg_codemirror_css_url' );
+	return compact( 'jquery_url', 'cbg_previewer_js_url', 'cbg_page_css_url', 'cbg_codemirror_js_url', 'cbg_codemirror_css_url' );
 }

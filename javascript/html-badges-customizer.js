@@ -7,7 +7,6 @@
 
 	var api = wp.customize;
 	
-	
 	// todo add try/catch
 	// todo errors in dev console. unrelated?
 	
@@ -39,29 +38,6 @@
 		}
 	} );
 	
-	/**
-	 * Custom control representing a site that can be previewed/imported
-	 */
-	api.controlConstructor.textarea = api.Control.extend( {
-		/**
-		 * Initialize the control after it's loaded
-		 */
-		ready : function() {
-			if ( 'setting_camptix_html_badge_css' !== this.id ) {
-				return;
-			}
-
-			console.log( 'a: ' + $( '#camptix-html-badges-css' ).textContent );
-			console.log( 'b: ' + $( '#camptix-html-badges-css' ).text() );
-			// why doesn't this work. need to use getdocubyid ?
-
-
-			$( '#camptix-html-badges-css' ).text( 'body { background-color: red; }' );    // todo xss
-				//console.log( api( 'setting_camptix_html_badge_css' ).get() );   // todo needs to update if update to control_ ?
-				// do this on load, and also do it every time the css changes
-		}
-	} );
-
 	/**
 	 * todo make dry with site cloner?
 	 *

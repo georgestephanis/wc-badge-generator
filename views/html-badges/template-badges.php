@@ -10,13 +10,11 @@ defined( 'WPINC' ) or die();
 /*
  * todo go through every line of this
  // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
-// use get_header and get_footer? or at least call wp_head and wp_footer? maybe not b/c don't want scripts, etc
-// use doctype etc from twentysixteen
 */
 
 /** @var $camptix CampTix_Plugin */
 
-extract( get_template_variables() );    // todo better way to do this? or maybe this is appropriate in this context
+extract( get_template_variables() );    // todo remove after switch to wp enqueueing
 
 ?>
 
@@ -32,15 +30,16 @@ extract( get_template_variables() );    // todo better way to do this? or maybe 
 	<style id="camptix-html-badges-css">
 		/* Placeholder for dynamically-added styles */
 		body { background-color: green };/*todo tmp */
+		/* todo enqueue default styles from wp, then overwrite automatically when js loads? or don't create at all and just let js do it, since have to remove anyway? */
 	</style>
-
-	<link rel="stylesheet" href="<?php echo esc_url( $cbg_page_css_url ); ?>">
 
 	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
 		<!-- todo create vars in caller -->
 		<script src="<?php echo esc_url( $cbg_codemirror_js_url ); ?>"></script>
 		<link rel="stylesheet" href="<?php echo esc_url( $cbg_codemirror_css_url ); ?>">
 	<?php endif; ?>
+
+	<?php wp_head(); ?>
 </head>
 
 
@@ -90,7 +89,7 @@ extract( get_template_variables() );    // todo better way to do this? or maybe 
 					<?php endif; ?>
 				</header>
 				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" />
+					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
 					<figcaption>
 						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
 					</figcaption>
@@ -106,7 +105,7 @@ extract( get_template_variables() );    // todo better way to do this? or maybe 
 					<?php endif; ?>
 				</header>
 				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" />
+					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
 					<figcaption>
 						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
 					</figcaption>
@@ -184,5 +183,8 @@ extract( get_template_variables() );    // todo better way to do this? or maybe 
 			*/
 		})(document);
 	</script>
+
+	<?php wp_footer(); // todo necessary for api avail?
+	// todo type error in console ?>
 </body>
 </html>
