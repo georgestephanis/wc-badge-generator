@@ -28,6 +28,9 @@ function register_scripts() {
 		array(),
 		1
 	);
+
+	// todo break those up into separate files and use admin_print_styles and readfile() ?
+		// that way they can be separate files but not lots of http requests
 }
 
 /**
@@ -62,10 +65,9 @@ function render_admin_page() {
 	);
 
 	if ( isset( $_GET['method'] ) && 'indesign' == $_GET['method'] ) {
-		$notify_tool_url = admin_url( 'edit.php?post_type=tix_ticket&page=camptix_tools&tix_section=notify' );
-
 		require_once( dirname( __DIR__ ) . '/views/indesign-badges/page-indesign-badges.php' );
 	} else {
+		$notify_tool_url   = admin_url( 'edit.php?post_type=tix_ticket&page=camptix_tools&tix_section=notify' );
 		$indesign_page_url = add_query_arg( 'method', 'indesign' );
 
 		require_once( dirname( __DIR__ ) . '/views/common/page-generate-badges.php' );

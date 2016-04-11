@@ -42,14 +42,18 @@ defined( 'WPINC' ) or die();
 				<li><?php _e( 'Most flexible design options.',             'wordcamporg' ); ?></li>
 				<li>
 					<?php printf(
-						__( 'Requires a designer and a copy of InDesign. <a href="%s">Free trials copies are available</a>.', 'wordcamporg' ),
+						__( 'Requires a designer and a copy of InDesign. <a href="%s">Free trial copies are available</a>.', 'wordcamporg' ),
 						'https://www.adobe.com/products/indesign.html'
 					); ?>
 				</li>
 				<li><?php _e( 'Printed by a professional printer, or at home.', 'wordcamporg' ); ?></li>
 			</ul>
 
-			<!-- todo show a sample image. use wcus15 -->
+			<!-- todo show a sample image. use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
+			or maybe
+			https://blogldc.s3.amazonaws.com/wp-content/uploads/2014/10/wordcamp_sf_mortenbadge.jpg
+			https://ma.tt/files/2014/10/MCM_2862.jpg
+			-->
 
 			<a class="button button-primary" href="<?php echo esc_url( $indesign_page_url ); ?>">
 				<?php _e( 'Create Badges with InDesign', 'wordcamporg' ); ?>
@@ -60,11 +64,12 @@ defined( 'WPINC' ) or die();
 	<p>
 		<?php printf(
 			__(
-				'Regardless of which method you choose, you\'ll get the best results if you encourage attendees to create Gravatar accounts before you create the badges.
-				You can use <a href="">the Notify tool</a> to e-mail everyone.
+				'Regardless of which method you choose, you\'ll get the best results if you encourage attendees to create <a href="%s">Gravatar</a> accounts before you create the badges.
+				You can use <a href="%s">the Notify tool</a> to e-mail everyone.
 				Make sure to tell them to use the same e-mail address that they used when purchasing a ticket.',
 				'wordcamporg'
 			),
+			'https://gravatar.com',
 			esc_url( $notify_tool_url )
 		); ?>
 	</p>
