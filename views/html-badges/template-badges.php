@@ -13,18 +13,13 @@ defined( 'WPINC' ) or die();
 */
 
 /** @var $camptix CampTix_Plugin */
-
-extract( get_template_variables() );    // todo remove after switch to wp enqueueing
-
 ?>
 
 <head>
 	<title><?php _e( 'CampTix Badges' ); ?></title>
 	<!-- todo have to set via wp to have show up in customerizer? -->
 
-		<meta charset="<?php bloginfo( 'charset' ); ?>">
-
-
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	
 	<!-- todo rename to better id -->
 	<style id="camptix-html-badges-css">
@@ -32,12 +27,6 @@ extract( get_template_variables() );    // todo remove after switch to wp enqueu
 		body { background-color: green };/*todo tmp */
 		/* todo enqueue default styles from wp, then overwrite automatically when js loads? or don't create at all and just let js do it, since have to remove anyway? */
 	</style>
-
-	<?php if ( defined( 'JETPACK__PLUGIN_FILE' ) ) : ?>
-		<!-- todo create vars in caller -->
-		<script src="<?php echo esc_url( $cbg_codemirror_js_url ); ?>"></script>
-		<link rel="stylesheet" href="<?php echo esc_url( $cbg_codemirror_css_url ); ?>">
-	<?php endif; ?>
 
 	<?php wp_head(); ?>
 </head>
@@ -184,7 +173,6 @@ extract( get_template_variables() );    // todo remove after switch to wp enqueu
 		})(document);
 	</script>
 
-	<?php wp_footer(); // todo necessary for api avail?
-	// todo type error in console ?>
+	<?php wp_footer(); ?>
 </body>
 </html>

@@ -15,7 +15,6 @@ add_filter( 'template_include',       __NAMESPACE__ . '\render_html_badges'     
  */
 function register_customizer_components( $wp_customize ) {
 	// todo add checkbox to include twitter, etc - v2
-	// todo use new 4.5 live refresh
 
 	$wp_customize->add_section(
 		'section_camptix_html_badges',
@@ -54,23 +53,38 @@ function register_customizer_components( $wp_customize ) {
 
 // todo
 function enqueue_customizer_scripts() {
-	// todo only in customizer  -- is there another method for that?
-		// register here, but enqueue from somewhere else like site cloner?
-
-	wp_enqueue_script(
+	wp_register_script(
 		'camptix-html-badges-customizer',
 		plugins_url( 'javascript/html-badges-customizer.js', __DIR__ ),
 		array( 'jquery', 'customize-controls' ),    // todo needs controls?
 		1,
 		true
 	);
+
+	if ( false ) {
+		// todo only in customizer  -- is there another method for that?
+		return;
+	}
+
+	wp_enqueue_script( 'camptix-html-badges-customizer' );
+
+	// todo check if callable, if not, then require()
+	//\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
 }
 
 // todo
 function enqueue_previewer_scripts() {
-	// todo only on our page
 
-	wp_enqueue_script(
+	// Remove all other stylesheets
+		// todo does this have to be done at diff hook b/c prevenw_init too early?
+	foreach( $GLOBALS['wp_styles']->queue as $stylesheet ) { 
+	//	wp_dequeue_style( $stylesheet );
+	}
+
+	//remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
+	
+	// Add our scripts and stylesheets
+	wp_register_script(
 		'camptix-html-badges-previewer',
 		plugins_url( 'javascript/html-badges-previewer.js', __DIR__ ),
 		array( 'jquery',  'customize-preview', 'underscore' ),    // todo needs controls? needs underscore?
@@ -78,11 +92,24 @@ function enqueue_previewer_scripts() {
 		true
 	);
 
-	// todo dequeue all plugin scripts/styles and theme styles
+	wp_register_style(
+		'camptix-html-badges-previewer',  //todo rename after split
+		plugins_url( 'css/camptix-badge-generator.css', __DIR__ ),
+		array(),
+		1
+	);
+
+	if ( false ) {
+		// todo only in customizer  -- is there another method for that?
+		return;
+	}
+
+	wp_enqueue_script( 'camptix-html-badges-previewer' );
+	wp_enqueue_style( 'camptix-html-badges' );
 }
 
 // todo
-function render_html_badges( $template ) {
+function render_html_badges( $template ) {  // todo rename to more accurate
 	if ( ! isset( $_GET['camptix-badges'] ) ) {
 		return $template;
 	}
@@ -105,18 +132,4 @@ function render_html_badges( $template ) {
 	}
 	
 	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
-}
-
-//todo
-// explain have to be prefixed to avoid accidentally overriding globals
-function get_template_variables() {
-
-	// todo move all this to enqueue_previewer
-
-	$cbg_previewer_js_url   = plugins_url( 'javascript/html-badges-previewer.js',                  __DIR__              );
-	$cbg_page_css_url       = plugins_url( 'css/camptix-badge-generator.css',                      __DIR__              );
-	$cbg_codemirror_js_url  = plugins_url( 'modules/custom-css/custom-css/js/codemirror.min.js',   JETPACK__PLUGIN_FILE );
-	$cbg_codemirror_css_url = plugins_url( 'modules/custom-css/custom-css/css/codemirror.min.css', JETPACK__PLUGIN_FILE );
-	
-	return compact( 'jquery_url', 'cbg_previewer_js_url', 'cbg_page_css_url', 'cbg_codemirror_js_url', 'cbg_codemirror_css_url' );
 }

@@ -56,8 +56,8 @@ function add_admin_page() {
 function render_admin_page() {
 	$html_customizer_url = add_query_arg(
 		array(
-			'camptix-html-badges' => '',
-			'url'                 => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
+			'autofocus[section]' => 'section_camptix_html_badges',
+			'url'                => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
 		),
 		admin_url( 'customize.php' )
 

@@ -22,10 +22,7 @@
 
 			// todo could just do this with string search and get rid of the function?
 
-			if ( urlParams.hasOwnProperty( 'camptix-html-badges' ) ) {
-				this.expand();
-			}
-
+			
 			if ( ! urlParams.hasOwnProperty( 'url' ) ) {    // todo maybe need to be mroe specific, make sure it has camptix-badges in url
 				// todo when open customizer directly, then click on section, need to set on previerwe url to `{site_url}?camptix-badges`
 				// might need to be somewhere different than here, like onclick handler or something

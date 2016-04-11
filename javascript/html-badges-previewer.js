@@ -12,10 +12,10 @@
 	// todo errors in dev console. unrelated?
 	// todo test in all browsers
 
+console.log('hi');
+	//updateCSS( wp.customize('setting_camptix_html_badge_css').get() );  // todo calling too soon?
 
-	// todo do this on load too
-		updateCSS( 'body{ background-color: yellow; }' ); // todo probably running too early? need to wait until frame fully loaded?
-		// have php preload it w/ the customizer value instead of the default, so don't get flash unstyled content
+	// have php preload it w/ the customizer value instead of the default, so don't get flash unstyled content
 
 	api( 'setting_camptix_html_badge_css', function( value ) {
 		value.bind( function( newCSS ) {
@@ -38,8 +38,10 @@
 			removedCss = true;
 		}
 
+		console.log( newCSS );
+
 		//badgeStyleElement.text( newCSS );   // todo need to reget after removing it?
-		$( '#camptix-html-badges-css' ).text( newCSS );
+		$( '#camptix-html-badges-css' ).text( newCSS ); // todo xss?
 	}
 } )( window.wp, jQuery );
 

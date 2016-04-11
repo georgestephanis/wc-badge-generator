@@ -16,19 +16,21 @@
  * HTML Badges
  */
 
+/* todo split into separate files */
 /* todo tweak */
+
 #camptix-badge-generator,
 #camptix-badge-generator > body {
 	margin: 0 !important;
 	padding: 0 !important;
-	/* need !important? */
+	/* todo need !important? */
 }
 
-#use-firefox,
-#style-tweak {
+#use-firefox {
 	padding: 1em 2em;
 }
 
+/* todo switch to customerizer */
 #style-tweak textarea,
 #style-tweak .CodeMirror {
 	width: 100%;
@@ -39,12 +41,6 @@
 
 #style-tweak .CodeMirror {
 	border: 1px solid #ccc;
-}
-
-@media print {
-	#style-tweak {
-		display: none;
-	}
 }
 
 
