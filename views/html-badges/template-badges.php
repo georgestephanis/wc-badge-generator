@@ -16,17 +16,21 @@ defined( 'WPINC' ) or die();
 		wp_head();
 
 		/*
-		 * todo go through every line of this
-		 * todo more stuff from twentysixteen?
-		 // todo probabely break this up into differnt parts of name them like customizer-section.php, etc
+		 * todo
+		 *
+		 * call this view from a function so vars aren't in global space - todo high
+		 * create vars in that function so this is a pure view
+		 * 
+		 * go through every line of this
+		 * show site logo, etc. maybe reuse some of default_single_og_image()?
+		 * more stuff from twentysixteen?
+		 * maybe break this up into differnt parts of name them like customizer-section.php, etc
 		*/
 	?>
 </head>
 
 <body>
 	<?php
-		// todo do all this in a function so aren't in global space
-
 		$attendees = get_posts( array(
 			'post_type'      => 'tix_attendee',
 			'posts_per_page' => -1,

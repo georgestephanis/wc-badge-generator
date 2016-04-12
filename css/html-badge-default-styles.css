@@ -1,49 +1,33 @@
-/* todo
-general review
-remove first page break
-*/
-
-body {
-	background-color: blue;
-}
-
 .attendee {
-	font-family: sans-serif;
-	/*
-	 * 8.5in page width,
-	 *  - 1in left margin,
-	 *  - 1in right margin,
-	 * All divided by two per page.
-	 */
-	width: 3.25in;
-	/*
-	 * 11in page height,
-	 *  - 1in top margin,
-	 *  - 1in bottom margin
-	 */
-	height: 9in;
 	float: left;
+	width: 3.25in;
+	height: 9in;
+	font-family: sans-serif;
 	text-align: center;
-	page-break-before: avoid;
 	box-sizing: border-box;
 }
-.attendee:nth-of-type(odd) {
-	page-break-before: always;
+
+.attendee:nth-of-type( odd ) {
 	clear: left;
 }
-.attendee:nth-of-type(even) {
+
+.attendee:nth-of-type( even ) {
 	float: right;
+	page-break-after: always;
 }
+
 .attendee section {
 	padding: 7em 1em 1em;
 	box-sizing: border-box;
 	height: 50%;
 	position: relative;
 }
+
 .attendee section.back {
-	transform: rotate(180deg);
+	transform: rotate( 180deg );
 	border-top: 1px dashed #888;
 }
+
 .attendee section .holepunch {
 	font-size: 0.7em;
 	text-align: center;
@@ -52,27 +36,22 @@ body {
 	right: 0;
 	top: 5%;
 }
-.attendee section header {
 
-}
 .attendee section header img {
 	max-width: 50%;
 	height: auto;
 }
+
 .attendee section header h1 {
 	margin: 0;
 }
-.attendee section figure {
 
-}
 .attendee section figure img {
 	max-width: 25%;
 	height: auto;
 	border-radius: 50%;
 }
-.attendee section figure figcaption {
 
-}
 .attendee section figure figcaption h3.name {
 	margin: 0;
 }

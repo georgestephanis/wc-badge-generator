@@ -59,11 +59,12 @@
 
 	/**
 	 * todo
-	 */
+	 *
+	 * todo this does overwrite the earlier button and breaks it
 	api.controlConstructor.button = api.Control.extend( {
 		/**
 		 * Initialize the control after it's loaded
-		 */
+		 *
 		ready : function() {
 			if ( 'cbg_control_reset_css' !== this.id ) {
 				return;
@@ -80,7 +81,7 @@
 				// it works, but probably overwrites the first one, so don't want that. could just have a single one, but there's probably a better practice
 				// look at how good plugins do it
 		}
-	} );
+	} );*/
 
 	/**
 	 * todo
