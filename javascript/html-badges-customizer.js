@@ -51,29 +51,29 @@
 				return;
 			}
 
-			var cmEditor = CodeMirror.fromTextArea(
-				$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
-				{
-					lineNumbers    : true,
-					tabSize        : 2,
-					indentWithTabs : true,
-					lineWrapping   : true
-				}
-			);
 
+			setTimeout( function() {
+				// todo need to fire this once our section has been expanded
 
+				var cmEditor = CodeMirror.fromTextArea(
+					$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
+					{
+						lineNumbers    : true,
+						tabSize        : 2,
+						indentWithTabs : true,
+						lineWrapping   : true
+					}
+				);
 
-			// todo layout is messed up until manually type something
-				// try mode? prob not
-				// lookup docs
+				// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
+				cmEditor.setSize( null, 500 );  // todo probably don't need, or want to do 100%
 
-			// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
-			cmEditor.setSize( null, 500 );  // todo probably don't need, or want to do 100%
+				// Update the Customizer textarea when the CodeMirror textarea changes
+				cmEditor.on( 'change', _.bind( function( editor ) {
+					api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
+				}, this ) );
 
-			// Update the Customizer textarea when the CodeMirror textarea changes
-			cmEditor.on( 'change', _.bind( function( editor ) {
-				api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
-			}, this ) );
+			}, 4000 );
 		}
 	} );
 	
