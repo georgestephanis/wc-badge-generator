@@ -3,6 +3,26 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
+/*
+ * template-loader.php includes this file in the global scope, which is ugly. So, include this again from a
+ * function, so that we get a nice, clean, local scope.
+ */
+if ( isset( $template ) && __FILE__ == $template ) {
+	render_badges_template();
+	return;
+}
+
+/*
+ * todo
+ *
+ * go through every line of this
+ * show site logo, etc. maybe reuse some of default_single_og_image()?
+ * more stuff from twentysixteen?
+ * maybe break this up into differnt parts of name them like customizer-section.php, etc
+ *
+ * add to documentation  that can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
+*/
+
 ?><!DOCTYPE html>
 <html id="camptix-badge-generator" <?php language_attributes(); ?>>
 
@@ -11,93 +31,67 @@ defined( 'WPINC' ) or die();
 
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 
-	<?php
-		/** @var $camptix \CampTix_Plugin */
-		wp_head();
-
-		/*
-		 * todo
-		 *
-		 * call this view from a function so vars aren't in global space - todo high
-		 * create vars in that function so this is a pure view
-		 * 
-		 * go through every line of this
-		 * show site logo, etc. maybe reuse some of default_single_og_image()?
-		 * more stuff from twentysixteen?
-		 * maybe break this up into differnt parts of name them like customizer-section.php, etc
-		 *
-		 * add to documentation  that can create different badges for speakers, sponsors, etc by targeting attendee.{ticket_slug}
-		*/
-	?>
+	<?php wp_head(); ?>
 </head>
 
 <body>
 	<?php
-		$attendees = get_posts( array(
-			'post_type'      => 'tix_attendee',
-			'posts_per_page' => -1,
-			'orderby'        => 'title',
-			'fields'         => 'ids', // ! no post objects
-			'cache_results'  => false,
-		) );
+		if ( empty( $attendees ) ) :
 
-		if ( ! is_array( $attendees ) || count( $attendees ) < 1 ) {
-			echo esc_html__( 'No attendees found to make badges for.' ) . "\r\n</body>\r\n</html>";
-			return;
-		}
-	?>
+			_e( 'No attendees were found. Please try again after registration has opened.', 'wordcamporg' );
 
-	<?php
-	// Disable object cache for prepared metadata.
-	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );
+		else :
 
-	foreach ( $attendees as $attendee_id ) :
-		$first   = get_post_meta( $attendee_id, 'tix_first_name', true );
-		$last    = get_post_meta( $attendee_id, 'tix_last_name', true );
-		$name    = $camptix->format_name_string( '<span class="tix-first">%first%</span> <span class="tix-last">%last%</span>', esc_html( $first ), esc_html( $last ) );
-		$email   = get_post_meta( $attendee_id, 'tix_email', true );
-		$avatar  = get_avatar_url( $email, array( 'size' => 600 ) );
-		$ticket  = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
+			foreach ( $attendees as $attendee_id ) :
+				$first  = get_post_meta( $attendee_id, 'tix_first_name', true );
+				$last   = get_post_meta( $attendee_id, 'tix_last_name',  true );
+				$name   = $camptix->format_name_string( '<span class="tix-first">%first%</span> <span class="tix-last">%last%</span>', esc_html( $first ), esc_html( $last ) );    // todo escape late
+				$email  = get_post_meta( $attendee_id, 'tix_email', true );
+				$avatar = get_avatar_url( $email, array( 'size' => 600 ) );
+				$ticket = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
 
-		?>
+				?>
 
-		<article class="attendee <?php echo esc_attr( $ticket->post_name ); ?>">
-			<section class="back">
-				<header>
-					<?php if ( has_custom_logo() ) : ?>
-						<?php the_custom_logo(); ?>
-					<?php else : ?>
-						<h1><?php bloginfo( 'name' ); ?></h1>
-					<?php endif; ?>
-				</header>
+				<article class="attendee <?php echo esc_attr( $ticket->post_name ); ?>">
+					<section class="back">
+						<header>
+							<?php if ( has_custom_logo() ) : ?>
+								<?php the_custom_logo(); ?>
+							<?php else : ?>
+								<h1><?php bloginfo( 'name' ); ?></h1>
+							<?php endif; ?>
+						</header>
 
-				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
-					<figcaption>
-						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
-					</figcaption>
-				</figure>
-			</section>
+						<figure>
+							<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
+							<figcaption>
+								<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
+							</figcaption>
+						</figure>
+					</section>
 
-			<section class="front">
-				<div class="holepunch">&#9421;</div>
-				<header>
-					<?php if ( has_custom_logo() ) : ?>
-						<?php the_custom_logo(); ?>
-					<?php else : ?>
-						<h1><?php bloginfo( 'name' ); ?></h1>
-					<?php endif; ?>
-				</header>
+					<section class="front">
+						<div class="holepunch">&#9421;</div>
 
-				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
-					<figcaption>
-						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
-					</figcaption>
-				</figure>
-			</section>
-		</article>
-	<?php endforeach; ?>
+						<!-- todo just reuse above instead of duplicating? -->
+						<header>
+							<?php if ( has_custom_logo() ) : ?>
+								<?php the_custom_logo(); ?>
+							<?php else : ?>
+								<h1><?php bloginfo( 'name' ); ?></h1>
+							<?php endif; ?>
+						</header>
+
+						<figure>
+							<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
+							<figcaption>
+								<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
+							</figcaption>
+						</figure>
+					</section>
+				</article>
+			<?php endforeach; ?>
+		<?php endif; ?>
 
 	<?php wp_footer(); ?>
 </body>

@@ -7,7 +7,7 @@ add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_compo
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',         998 );
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
-add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'             );
+add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'            );
 
 // todo need someone to actually test printing, since i don't have a printer
 // todo write a launch post for make/community
@@ -152,7 +152,7 @@ function is_badges_preview() {
  *
  * @return string
  */
-function render_html_badges( $template ) {  // todo rename to more accurate
+function use_badges_template( $template ) {
 	if ( ! is_badges_preview() ) {
 		return $template;
 	}
@@ -162,6 +162,26 @@ function render_html_badges( $template ) {  // todo rename to more accurate
 	}
 
 	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
+}
+
+/**
+ * Render the template for HTML badges
+ */
+function render_badges_template() {
+	global $camptix;
+	
+	$attendees = get_posts( array(
+		'post_type'      => 'tix_attendee',
+		'posts_per_page' => -1,
+		'orderby'        => 'title',
+		'fields'         => 'ids', // ! no post objects
+		'cache_results'  => false,
+	) );
+	
+	// Disable object cache for prepared metadata.
+	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );  // todo necessary?
+
+	require( dirname( __DIR__ ) . '/views/html-badges/template-badges.php' );
 }
 
 /**
