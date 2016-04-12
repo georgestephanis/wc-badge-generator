@@ -41,15 +41,7 @@ defined( 'WPINC' ) or die();
 		}
 	?>
 
-	<p id="use-firefox">
-		<?php _e(
-			"Make sure to use Firefox to print these badges.
-			 Some other browsers (like Chrome) don't respect some CSS properties that we use to specify where page breaks should be.",
-			'wordcamporg'
-		); ?>
-	</p>
-
-<?php
+	<?php
 	// Disable object cache for prepared metadata.
 	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );
 

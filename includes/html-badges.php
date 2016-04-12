@@ -9,6 +9,13 @@ add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',      
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
 add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'             );
 
+// todo need someone to actually test printing, since i don't have a printer
+// todo write a launch post for make/community
+// todo maybe make the section a bit wider, but not too much
+// can use the ? icon like the Menus section does if too much help text
+	// in help text, link to notify tool to email people to sign up for gravatar w/ their camptix email addr
+// can use teh [gear] icon like the Menus section does for options like including twitter field, etc
+
 /**
  * Register our Customizer settings, panels, sections, and controls
  *
@@ -22,10 +29,41 @@ function register_customizer_components( $wp_customize ) {
 		array(
 			'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
 			'title'       => __( 'CampTix HTML Badges',                       'wordcamporg' ),
-			'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
+			'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),  // todo probably move this to ? icon, to save space
 			'type'        => 'cbgSection'
 		)
 	);
+
+	// todo better names for settings and controls. prefix instead of entire name, more descriptive
+	//
+	$wp_customize->add_control( 'cbg_control_print_badges', array(
+		'section'     => 'section_camptix_html_badges',
+		'settings'    => array(),
+		'type'        => 'button',
+		'priority'    => 1,
+		'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+		'input_attrs' => array(
+			'class' => 'button button-primary',
+			'value' => __( 'Print', 'wordcamporg' ),
+		),
+	) );
+
+	$wp_customize->add_control( 'cbg_control_reset_css', array(
+		'section'     => 'section_camptix_html_badges',
+		'settings'    => array(),
+		'type'        => 'button',
+		'priority'    => 1,
+		'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+		'input_attrs' => array(
+			'class' => 'button button-secondary',
+			'value' => __( 'Reset to Default', 'wordcamporg' ), // todo is that clear enough that it will be the default css, not their last saved version?
+
+			// todo make this an icon in the section title, but would need some kind of AYS
+				// todo or just align next to each other. flex, but would need container. maybe float?
+		),
+	) );
+
+	// todo remove 'setting_', 'control_', etc prefixes to be consistent w/ core?
 
 	$wp_customize->add_setting(
 		'setting_camptix_html_badge_css',
@@ -44,11 +82,20 @@ function register_customizer_components( $wp_customize ) {
 		array(
 			'type'        => 'textarea',
 			'section'     => 'section_camptix_html_badges',
+			'priority'    => 2,
 			'label'       => __( 'Customize CSS', 'wordcamporg' ),
-			'description' => 'foo instructions',
+			'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
 			// todo add a ticket type css selector, and write inline documentation about it
 		)
 	);
+	
+	__("Make sure to use Firefox to print these badges.
+	 Some other browsers (like Chrome) don't respect some CSS properties that we use to specify where page breaks should be.",
+	'wordcamporg');
+	// todo move from previewer to customizer, but takes up too much room. maybe add collapsable help control?
+	// todo detect if firefox and don't show
+
+
 	
 	// todo add button to reset to default css
 	
@@ -69,8 +116,8 @@ function enqueue_customizer_scripts() {
 	// Dequeue extraneous Jetpack scripts and styles
 	wp_dequeue_script( 'postbox' );
 	wp_dequeue_script( 'custom-css-editor' );
-	//wp_dequeue_style( 'custom-css-editor' );  //todo sometimes breaks
-	//wp_dequeue_style( 'jetpack-css-use-codemirror' );//todo sometimes breaks
+	//wp_dequeue_style( 'custom-css-editor' );           //todo sometimes breaks
+	//wp_dequeue_style( 'jetpack-css-use-codemirror' );  //todo sometimes breaks
 	wp_dequeue_script( 'jetpack-css-use-codemirror' );
 
 	wp_enqueue_script(

@@ -40,7 +40,50 @@
 	} );
 
 	/**
-	 * Custom control representing a site that can be previewed/imported
+	 * todo
+	 */
+	api.controlConstructor.button = api.Control.extend( {
+		/**
+		 * Initialize the control after it's loaded
+		 */
+		ready : function() {
+			if ( 'cbg_control_print_badges' !== this.id ) {
+				return;
+			}
+
+			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( function() {
+				window.frames[0].print();
+			} );
+		}
+	} );
+
+	/**
+	 * todo
+	 */
+	api.controlConstructor.button = api.Control.extend( {
+		/**
+		 * Initialize the control after it's loaded
+		 */
+		ready : function() {
+			if ( 'cbg_control_reset_css' !== this.id ) {
+				return;
+			}
+
+			$( '#customize-control-cbg_control_reset_css' ).find( 'input[type=button]' ).click( function() {
+				//api( 'setting_camptix_html_badge_css' ).
+				// todo i think there's a way through api() to reset to orig value, or at least retrieve orig value and set()
+					// doesn't look like it's available in JS anywhere, just make your own by using data attribute or a js var or something
+					// can use new 4.5 include_script whatever instead of localize_script
+			} );
+
+			// todo can i extend button twice? think i might need to just do it once, and maybe even shouldn't do it, b/c what if other plugin does it too?
+				// it works, but probably overwrites the first one, so don't want that. could just have a single one, but there's probably a better practice
+				// look at how good plugins do it
+		}
+	} );
+
+	/**
+	 * todo
 	 */
 	api.controlConstructor.textarea = api.Control.extend( {
 		/**
@@ -58,7 +101,6 @@
 				var cmEditor = CodeMirror.fromTextArea(
 					$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
 					{
-						lineNumbers    : true,
 						tabSize        : 2,
 						indentWithTabs : true,
 						lineWrapping   : true
@@ -66,7 +108,7 @@
 				);
 
 				// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
-				cmEditor.setSize( null, 500 );  // todo probably don't need, or want to do 100%
+				//cmEditor.setSize( null, 400 );  // todo probably don't need, or want to do 100%
 
 				// Update the Customizer textarea when the CodeMirror textarea changes
 				cmEditor.on( 'change', _.bind( function( editor ) {
@@ -79,6 +121,7 @@
 	
 	/**
 	 * todo make dry with site cloner?
+	 * todo still using this now that have autofocus? maybe for url param
 	 *
 	 * Parse the URL parameters
 	 *
