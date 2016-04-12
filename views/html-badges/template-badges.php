@@ -25,6 +25,8 @@ defined( 'WPINC' ) or die();
 		 * show site logo, etc. maybe reuse some of default_single_og_image()?
 		 * more stuff from twentysixteen?
 		 * maybe break this up into differnt parts of name them like customizer-section.php, etc
+		 *
+		 * add to documentation  that can create different badges for speakers, sponsors, etc by targeting attendee.{ticket_slug}
 		*/
 	?>
 </head>
@@ -55,9 +57,11 @@ defined( 'WPINC' ) or die();
 		$name    = $camptix->format_name_string( '<span class="tix-first">%first%</span> <span class="tix-last">%last%</span>', esc_html( $first ), esc_html( $last ) );
 		$email   = get_post_meta( $attendee_id, 'tix_email', true );
 		$avatar  = get_avatar_url( $email, array( 'size' => 600 ) );
+		$ticket  = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
+
 		?>
 
-		<article class="attendee">
+		<article class="attendee <?php echo esc_attr( $ticket->post_name ); ?>">
 			<section class="back">
 				<header>
 					<?php if ( has_custom_logo() ) : ?>
@@ -68,7 +72,7 @@ defined( 'WPINC' ) or die();
 				</header>
 
 				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
+					<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
 					<figcaption>
 						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
 					</figcaption>
@@ -86,7 +90,7 @@ defined( 'WPINC' ) or die();
 				</header>
 
 				<figure>
-					<img src="<?php echo esc_url( $avatar ); ?>" /> <!-- todo add alt -->
+					<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
 					<figcaption>
 						<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
 					</figcaption>

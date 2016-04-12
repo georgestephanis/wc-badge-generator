@@ -9,7 +9,6 @@
 	var removedCss = false; // todo include in above        // todo rename?
 	
 	// todo add try/catch
-	// todo errors in dev console. unrelated?
 	// todo test in all browsers
 
 	api( 'setting_camptix_html_badge_css', function( value ) {
@@ -18,7 +17,11 @@
 		} );
 	} );
 
-	// todo jsdoc
+	/**
+	 * Update the CSS in the Previewer
+	 * 
+	 * @param {string} newCSS
+	 */
 	function updateCSS( newCSS ) {
 		var badgeStyleElement = $( '#camptix-html-badges-css' );
 

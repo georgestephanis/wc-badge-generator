@@ -16,14 +16,19 @@ add_filter( 'template_include',      __NAMESPACE__ . '\render_html_badges'      
 	// in help text, link to notify tool to email people to sign up for gravatar w/ their camptix email addr
 // can use teh [gear] icon like the Menus section does for options like including twitter field, etc
 
+/*
+ * todo v2
+ * 
+ * add checkbox to include twitter, etc
+ */
+
+	
 /**
  * Register our Customizer settings, panels, sections, and controls
  *
  * @param \WP_Customize_Manager $wp_customize
  */
 function register_customizer_components( $wp_customize ) {
-	// todo add checkbox to include twitter, etc - v2
-
 	$wp_customize->add_section(
 		'section_camptix_html_badges',
 		array(
@@ -73,7 +78,7 @@ function register_customizer_components( $wp_customize ) {
 			'capability'        => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
 			'transport'         => 'postMessage',
 			'sanitize_callback' => 'esc_textarea',
-			// todo esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
+			// todo high - esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
 		)
 	);
 
@@ -85,7 +90,6 @@ function register_customizer_components( $wp_customize ) {
 			'priority'    => 2,
 			'label'       => __( 'Customize CSS', 'wordcamporg' ),
 			'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
-			// todo add a ticket type css selector, and write inline documentation about it
 		)
 	);
 	
@@ -94,15 +98,16 @@ function register_customizer_components( $wp_customize ) {
 	'wordcamporg');
 	// todo move from previewer to customizer, but takes up too much room. maybe add collapsable help control?
 	// todo detect if firefox and don't show
+		// test in chrome b/c caniuse.com says no diff b/w firefox and chrome
 
 
-	
-	// todo add button to reset to default css
-	
-	// todo test that it saves modified css
+
+	// todo test that it saves modified css - looks good but haven't looked close
 }
 
-// todo
+/**
+ * Enqueue scripts and styles for the Customizer
+ */
 function enqueue_customizer_scripts() {
 	if ( false ) {
 		// todo only in customizer  -- is there another method for that?
@@ -129,15 +134,41 @@ function enqueue_customizer_scripts() {
 	);
 }
 
-// todo
+/**
+ * Check if the current page is our section of the Previewer
+ *
+ * @return bool
+ */
 function is_badges_preview() {
 	global $wp_customize;
 
 	return isset( $_GET['camptix-badges'] ) && $wp_customize->is_preview();
 }
 
-// todo
-// todo make dry w/ coming soon page?
+/**
+ * Use our custom template when the Badges page is requested
+ *
+ * @param string $template
+ *
+ * @return string
+ */
+function render_html_badges( $template ) {  // todo rename to more accurate
+	if ( ! is_badges_preview() ) {
+		return $template;
+	}
+
+	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
+		return $template;
+	}
+
+	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
+}
+
+/**
+ * Remove all other styles from the Previewer, to avoid conflicts
+ *
+ * todo make dry w/ coming soon page?
+ */
 function remove_all_styles() {
 	global $wp_styles;
 
@@ -156,7 +187,9 @@ function remove_all_styles() {
 	// todo remove remote-css?
 }
 
-// todo
+/**
+ * Enqueue scripts and styles for the Previewer
+ */
 function enqueue_previewer_scripts() {
 	if ( ! is_badges_preview() ) {
 		return;
@@ -165,7 +198,7 @@ function enqueue_previewer_scripts() {
 	wp_register_script(
 		'camptix-html-badges-previewer',
 		plugins_url( 'javascript/html-badges-previewer.js', __DIR__ ),
-		array( 'jquery',  'customize-preview', 'underscore' ),    // todo needs controls? needs underscore?
+		array( 'jquery', 'customize-preview' ),
 		1,
 		true
 	);
@@ -188,20 +221,9 @@ function enqueue_previewer_scripts() {
 	add_action( 'wp_print_styles', __NAMESPACE__ . '\print_saved_styles' ); // done here so it is registered after remove_all_styles()
 }
 
-// todo
-function render_html_badges( $template ) {  // todo rename to more accurate
-	if ( ! is_badges_preview() ) {
-		return $template;
-	}
-
-	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
-		return $template;
-	}
-	
-	return dirname( __DIR__ ) . '/views/html-badges/template-badges.php';
-}
-
-//todo
+/**
+ * Print the saved badge CSS
+ */
 function print_saved_styles() {
 	if ( ! is_badges_preview() ) {
 		return;
@@ -211,7 +233,7 @@ function print_saved_styles() {
 
 	<!-- todo rename to better id,update everywhere -->
 	<style id="camptix-html-badges-css" type="text/css">
-		<?php echo esc_html( get_option( 'setting_camptix_html_badge_css' ) ); // todo is this the correct escaping function? ?>
+		<?php echo esc_html( get_option( 'setting_camptix_html_badge_css' ) ); // todo high - is this the correct escaping function? ?>
 	</style>
 
 	<?php

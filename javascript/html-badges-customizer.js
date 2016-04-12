@@ -8,7 +8,6 @@
 	var api = wp.customize;
 	
 	// todo add try/catch
-	// todo errors in dev console. unrelated?
 	
 	/**
 	 * The CampTix HTML Badges panel
@@ -60,7 +59,7 @@
 	/**
 	 * todo
 	 *
-	 * todo this does overwrite the earlier button and breaks it
+	 * todo high - this does overwrite the earlier button and breaks it
 	api.controlConstructor.button = api.Control.extend( {
 		/**
 		 * Initialize the control after it's loaded
@@ -97,7 +96,7 @@
 
 
 			setTimeout( function() {
-				// todo need to fire this once our section has been expanded
+				// todo high - need to fire this once our section has been expanded
 
 				var cmEditor = CodeMirror.fromTextArea(
 					$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
@@ -109,7 +108,7 @@
 				);
 
 				// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
-				//cmEditor.setSize( null, 400 );  // todo probably don't need, or want to do 100%
+				//cmEditor.setSize( null, 400 );  // todo high - probably don't need, or want to do 100%
 
 				// Update the Customizer textarea when the CodeMirror textarea changes
 				cmEditor.on( 'change', _.bind( function( editor ) {
