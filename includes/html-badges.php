@@ -57,23 +57,29 @@ function register_customizer_components( $wp_customize ) {
 
 // todo
 function enqueue_customizer_scripts() {
-	wp_register_script(
-		'camptix-html-badges-customizer',
-		plugins_url( 'javascript/html-badges-customizer.js', __DIR__ ),
-		array( 'jquery', 'customize-controls' ),    // todo needs controls?
-		1,
-		true
-	);
-
 	if ( false ) {
 		// todo only in customizer  -- is there another method for that?
 		return;
 	}
 
-	wp_enqueue_script( 'camptix-html-badges-customizer' );
-
+	// Enqueue CodeMirror script and style
 	// todo check if callable, if not, then require()
-	//\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
+	\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
+
+	// Dequeue extraneous Jetpack scripts and styles
+	wp_dequeue_script( 'postbox' );
+	wp_dequeue_script( 'custom-css-editor' );
+	//wp_dequeue_style( 'custom-css-editor' );  //todo sometimes breaks
+	//wp_dequeue_style( 'jetpack-css-use-codemirror' );//todo sometimes breaks
+	wp_dequeue_script( 'jetpack-css-use-codemirror' );
+
+	wp_enqueue_script(
+		'camptix-html-badges-customizer',
+		plugins_url( 'javascript/html-badges-customizer.js', __DIR__ ),
+		array( 'jquery', 'jetpack-css-codemirror' ),
+		1,
+		true
+	);
 }
 
 // todo
@@ -141,10 +147,6 @@ function render_html_badges( $template ) {  // todo rename to more accurate
 		return $template;
 	}
 
-	// todo still need to detect if our panel
-		// no, just detect if url has query param, then when open panel, redirect customzeir frame to that url
-
-
 	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
 		return $template;
 	}
@@ -154,21 +156,15 @@ function render_html_badges( $template ) {  // todo rename to more accurate
 
 //todo
 function print_saved_styles() {
-	global $wp_customize;
-
 	if ( ! is_badges_preview() ) {
 		return;
 	}
 
-	// todo only on current page/section
-
-	// todo check if nothing saved, then use defaults
-	// todo enqueue default styles from wp, then overwrite automatically when js loads? or don't create at all and just let js do it, since have to remove anyway?
 	?>
 
 	<!-- todo rename to better id,update everywhere -->
 	<style id="camptix-html-badges-css" type="text/css">
-		<?php echo esc_html( $wp_customize->get_setting( 'setting_camptix_html_badge_css' )->value() ); // todo is this the correct escaping function? ?>
+		<?php echo esc_html( get_option( 'setting_camptix_html_badge_css' ) ); // todo is this the correct escaping function? ?>
 	</style>
 
 	<?php

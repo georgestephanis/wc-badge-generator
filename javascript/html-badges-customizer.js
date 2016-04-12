@@ -28,6 +28,8 @@
 				// might need to be somewhere different than here, like onclick handler or something
 				// window.parent.location = ...;
 
+				// when opening customize.php manually and browsing to the section, detect if url has query param, if doesn't, then redirect previewer frame to that url
+
 				// when navigating away from this section, need to refresh previewer w/out our URL, to add styles back etc
 
 				// add click handler on section, or maybe the API already provides a way for that
@@ -49,15 +51,29 @@
 				return;
 			}
 
-			/*
-				var cmEditor = CodeMirror.fromTextArea( styleTweakCss, {
-				lineNumbers    : true,
-				tabSize        : 2,
-				indentWithTabs : true,
-				lineWrapping   : true
-			});
+			var cmEditor = CodeMirror.fromTextArea(
+				$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
+				{
+					lineNumbers    : true,
+					tabSize        : 2,
+					indentWithTabs : true,
+					lineWrapping   : true
+				}
+			);
 
-		 */
+
+
+			// todo layout is messed up until manually type something
+				// try mode? prob not
+				// lookup docs
+
+			// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
+			cmEditor.setSize( null, 500 );  // todo probably don't need, or want to do 100%
+
+			// Update the Customizer textarea when the CodeMirror textarea changes
+			cmEditor.on( 'change', _.bind( function( editor ) {
+				api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
+			}, this ) );
 		}
 	} );
 	
