@@ -13,25 +13,7 @@ defined( 'WPINC' ) or die();
  * display instructions for indesign data merge in contextual help
  */
 
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\register_scripts' );
-add_action( 'admin_menu',            __NAMESPACE__ . '\add_admin_page'   );
-
-/**
- * Register common scripts and styles
- */
-function register_scripts() {
-	// todo only enqueue on our pages
-
-	wp_enqueue_style(
-		'camptix_badge_generator',
-		plugins_url( 'css/camptix-badge-generator.css', __DIR__ ),
-		array(),
-		1
-	);
-
-	// todo break those up into separate files and use admin_print_styles and readfile() ?
-		// that way they can be separate files but not lots of http requests
-}
+add_action( 'admin_menu', __NAMESPACE__ . '\add_admin_page' );
 
 /**
  * Register admin pages
@@ -40,7 +22,7 @@ function add_admin_page() {
 	// todo put this under tools? but then it won't be seen? probably correct to put it there, but need documentation
         //  add to handbook, write post on make/comm	
 
-	add_submenu_page(
+	$hook_suffix = add_submenu_page(
 		'edit.php?post_type=tix_ticket',    // todo this should be slug instead of url?
 		__( 'Generate Badges', 'wordcamporg' ),
 		__( 'Generate Badges', 'wordcamporg' ),
@@ -48,6 +30,23 @@ function add_admin_page() {
 		'generate_badges',
 		__NAMESPACE__ . '\render_admin_page'
 	);
+
+	add_action( 'admin_print_styles-' . $hook_suffix, __NAMESPACE__ . '\print_admin_styles' );
+}
+
+/**
+ * Print CSS styles for wp-admin
+ */
+function print_admin_styles() {
+	?>
+
+	<!-- BEGIN CampTix Badge Generator -->
+	<style type="text/css">
+		<?php require_once( dirname( __DIR__ ) . '/css/camptix-badge-generator.css' ); ?>
+	</style>
+	<!-- END CampTix Badge Generator -->
+
+	<?php
 }
 
 /**
