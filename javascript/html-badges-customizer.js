@@ -94,10 +94,9 @@
 				return;
 			}
 
-
-			setTimeout( function() {
-				// todo high - need to fire this once our section has been expanded
-
+			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded', function() {
+				// todo should do this from the section? prob not
+				
 				var cmEditor = CodeMirror.fromTextArea(
 					$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
 					{
@@ -114,8 +113,7 @@
 				cmEditor.on( 'change', _.bind( function( editor ) {
 					api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
 				}, this ) );
-
-			}, 4000 );
+			} );
 		}
 	} );
 	
