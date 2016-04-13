@@ -12,15 +12,19 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 /*
  * todo v1
  *
+ * wordcamp name smaller, attendee name bigger
+ * wordcamp logo smaller, attendee avatar bigger
+ *
  * high - compare PDF from this branch to PDF from master, to make sure it's close.
  * - will still need to test actual printing, but this'll be good until can do that
  * high - need someone to actually test printing, since i don't have a printer
- *
+ * 
  * can use the ? icon like the Menus section does if too much help text
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
  * - can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
  * - if accidentally reset, hit ctrl-z inside textarea to undo
+ * - note that normalize.css is enqueued before your styles. you can override them.
  *
  * update handbook/plan docs
  * write a launch post for make/community
@@ -29,8 +33,9 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 
 /*
  * todo v2
- * 
- * add checkbox to include twitter, etc
+ *
+ * improve the default design
+ * add checkbox to include twitter, option for which image, option for name instead of image, etc
  * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
  */
 
@@ -104,15 +109,6 @@ function register_customizer_components( $wp_customize ) {
 			'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
 		)
 	);
-	
-	__( "Make sure to use Firefox to print these badges.
-	 Some other browsers (like Chrome) don't respect some CSS properties that we use to specify where page breaks should be.",
-	'wordcamporg');
-	// todo move from previewer to customizer, but takes up too much room. maybe add collapsable help control?
-	// todo detect if firefox and don't show
-		// test in chrome b/c caniuse.com says no diff b/w firefox and chrome
-
-
 
 	// todo test that it saves modified css - looks good but haven't looked close
 }
@@ -265,12 +261,27 @@ function enqueue_previewer_scripts() {
 		true
 	);
 
+	wp_register_style(
+		'cbg_normalize',
+		plugins_url( 'css/normalize.min.css', __DIR__ ),
+		array(),
+		'4.1.1'
+	);
+
 	if ( ! is_badges_preview() ) {
 		return;
 	}
 
 	wp_enqueue_script( 'camptix-html-badges-previewer' );
-	add_action( 'wp_print_styles', __NAMESPACE__ . '\print_saved_styles' ); // done here so it is registered after remove_all_styles()
+	wp_enqueue_style( 'cbg_normalize' );
+
+	/*
+	 * Register the callback in this function so that the stylesheet is registered after remove_all_styles().
+	 *
+	 * Also, register it at wp_print_scripts instead of wp_print_styles, so that it gets printed _after_
+	 * normalize.min.css.
+	 */
+	add_action( 'wp_print_scripts', __NAMESPACE__ . '\print_saved_styles' );
 }
 
 /**
