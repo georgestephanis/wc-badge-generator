@@ -42,7 +42,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 				badgeStyleElement = $( '#camptix-html-badges-css' );
 			}
 
-			badgeStyleElement.text( newCSS ); // todo xss?
+			badgeStyleElement.text( newCSS ); // todo high - xss?
 		} catch( exception ) {
 			self.log( exception );
 		}
@@ -51,7 +51,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	/**
 	 * Log a message to the console
 	 *
-	 * @todo make DRY with CampTixHtmlBadgesCustomerizer
+	 * @todo make DRY with CampTixHtmlBadgesCustomeizer
 	 *
 	 * @param {*} error
 	 */

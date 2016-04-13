@@ -12,13 +12,46 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.initialize = function() {
 		try {
-			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded', self.setupCodeMirror );
+			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded',  self.loadBadgesPage   );
+			api.section( 'section_camptix_html_badges' ).container.bind( 'collapsed', self.unloadBadgesPage );
+			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded',  self.setupCodeMirror  );
 
 			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
 			$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
 		} catch( exception ) {
 			self.log( exception );
 		}
+	};
+
+	/**
+	 * Load the Badges pages when navigating to our Section
+	 *
+	 * @param {object} event
+	 */
+	self.loadBadgesPage = function( event ) {
+		try {
+			var urlParams = self.getUrlParams( window.location.href );
+
+			// todo could just do this with string search and get rid of the function?
+
+			if ( ! urlParams.hasOwnProperty( 'url' ) ) {    // todo maybe need to be mroe specific, make sure it has camptix-badges in url
+				wp.customize.previewer.previewUrl.set( 'https://2014.content.wordcamp.dev/?camptix-badges' );
+				// todo dynamic
+				// todo need to strip URL params for safety. just get base URL then append/remove camptix-badges param
+			}
+		} catch ( exception ) {
+			self.log( exception );
+		}
+	};
+
+	/**
+	 * Unload the Badges page when navigating away from our Section
+	 *
+	 * @param {object} event
+	 */
+	self.unloadBadgesPage = function( event ) {
+		wp.customize.previewer.previewUrl.set( 'https://2014.content.wordcamp.dev/' );
+		// todo dynamic, strip params
 	};
 
 	/**
@@ -82,40 +115,6 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 			self.log( exception );
 		}
 	};
-
-	/**
-	 * The CampTix HTML Badges panel
-	 */
-	api.sectionConstructor.cbgSection = api.Section.extend( {
-		// todo can/should probably redo this as a function that gets called from self.init. prob no need to extend Section?
-
-		/**
-		 * Open this section when it's directly requested via a URL parameter
-		 */
-		ready : function() {
-			try {
-				var urlParams = self.getUrlParams( window.location.href );
-
-				// todo could just do this with string search and get rid of the function?
-
-				if ( !urlParams.hasOwnProperty( 'url' ) ) {    // todo maybe need to be mroe specific, make sure it has camptix-badges in url
-					// todo when open customizer directly, then click on section, need to set on previerwe url to `{site_url}?camptix-badges`
-					// might need to be somewhere different than here, like onclick handler or something
-					// window.parent.location = ...;
-
-					// when opening customize.php manually and browsing to the section, detect if url has query param, if doesn't, then redirect previewer frame to that url
-
-					// when navigating away from this section, need to refresh previewer w/out our URL, to add styles back etc
-
-					// add click handler on section, or maybe the API already provides a way for that
-					// maybe check section.expanded, listen for click event, override onChangeExpanded
-					// window.parent.location = 'https://2014.content.wordcamp.dev/wp-admin/customize.php?camptix-html-badges&url=https%3A%2F%2F2014.content.wordcamp.dev%3Fcamptix-badges';   // todo dynamic
-				}
-			} catch ( exception ) {
-				self.log( exception );
-			}
-		}
-	} );
 
 	/**
 	 * todo make dry with site cloner?
