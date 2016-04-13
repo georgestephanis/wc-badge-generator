@@ -12,10 +12,6 @@ if ( isset( $template ) && __FILE__ == $template ) {
 	return;
 }
 
-/*
- *
-*/
-
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 

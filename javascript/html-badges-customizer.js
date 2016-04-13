@@ -10,6 +10,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 
 	// todo test in all browsers
 	// todo change "save & publish" to just "save" ?
+	// todo maybe use window.onerror instead of try/catch everywhere? but only if another script hasn't registered a handler
+		// would need to do one for all wcorg, not just this plugin. but maybe it's best to let errors stop everything, just like in php
 
 	/**
 	 * Initialize
@@ -85,9 +87,6 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.printBadges = function( event ) {
-		// todo high - compare PDF from this branch to PDF from master, to make sure it's close.
-			// will still need to test actual printing, but this'll be good until can do that
-
 		try {
 			window.frames[0].print();
 		} catch( exception ) {
@@ -116,7 +115,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 
 	/**
 	 * Log a message to the console
-	 * 
+	 *
 	 * @todo make DRY with CampTixHtmlBadgesPreviewer
 	 *
 	 * @param {*} error

@@ -12,7 +12,10 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 /*
  * todo v1
  *
+ * high - compare PDF from this branch to PDF from master, to make sure it's close.
+ * - will still need to test actual printing, but this'll be good until can do that
  * high - need someone to actually test printing, since i don't have a printer
+ *
  * can use the ? icon like the Menus section does if too much help text
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
@@ -21,6 +24,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  *
  * update handbook/plan docs
  * write a launch post for make/community
+ * leave comment on george's post
  */
 
 /*
