@@ -5,6 +5,7 @@ defined( 'WPINC' ) or die();
 
 add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );
+add_action( 'admin_print_styles',    __NAMESPACE__ . '\print_customizer_styles'        );
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',         998 );
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
 add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'            );
@@ -12,11 +13,6 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 /*
  * todo v1
  *
- * wordcamp name smaller, attendee name bigger
- * wordcamp logo smaller, attendee avatar bigger
- *
- * high - compare PDF from this branch to PDF from master, to make sure it's close.
- * - will still need to test actual printing, but this'll be good until can do that
  * high - need someone to actually test printing, since i don't have a printer
  * 
  * can use the ? icon like the Menus section does if too much help text
@@ -49,10 +45,11 @@ function register_customizer_components( $wp_customize ) {
 	$wp_customize->add_section(
 		'section_camptix_html_badges',
 		array(
-			'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
-			'title'       => __( 'CampTix HTML Badges',                       'wordcamporg' ),
-			'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),  // todo probably move this to ? icon, to save space
-			'type'        => 'cbgSection'
+			'capability' => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+			'title'      => __( 'CampTix HTML Badges', 'wordcamporg' ),
+			'type'       => 'cbgSection'
+
+			//'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),  // todo probably move this to ? icon, to save space
 		)
 	);
 
@@ -90,7 +87,7 @@ function register_customizer_components( $wp_customize ) {
 	$wp_customize->add_setting(
 		'setting_camptix_html_badge_css',
 		array(
-			'default'           => file_get_contents( dirname( __DIR__ ) . '/css/html-badge-default-styles.css' ),
+			'default'           => file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' ),
 			'type'              => 'option',
 			'capability'        => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
 			'transport'         => 'postMessage',
@@ -105,8 +102,9 @@ function register_customizer_components( $wp_customize ) {
 			'type'        => 'textarea',
 			'section'     => 'section_camptix_html_badges',
 			'priority'    => 2,
-			'label'       => __( 'Customize CSS', 'wordcamporg' ),
-			'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
+			'label'       => __( 'Customize Badge CSS', 'wordcamporg' ),
+
+			//'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
 		)
 	);
 
@@ -139,6 +137,26 @@ function enqueue_customizer_scripts() {
 		1,
 		true
 	);
+}
+
+/**
+ * Print styles for the Customizer
+ */
+function print_customizer_styles() {
+	if ( false ) {
+		// todo only in customizer  -- is there another method for that?
+		return;
+	}
+
+	?>
+
+	<!-- BEGIN CampTix Badge Generator -->
+	<style type="text/css">
+		<?php require_once( dirname( __DIR__ ) . '/css/html-badges-customizer.css' ); ?>
+	</style>
+	<!-- END CampTix Badge Generator -->
+
+	<?php
 }
 
 /**

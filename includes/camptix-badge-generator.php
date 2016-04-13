@@ -32,7 +32,7 @@ function print_admin_styles() {
 
 	<!-- BEGIN CampTix Badge Generator -->
 	<style type="text/css">
-		<?php require_once( dirname( __DIR__ ) . '/css/camptix-badge-generator.css' ); ?>
+		<?php require_once( dirname( __DIR__ ) . '/css/admin-pages.css' ); ?>
 	</style>
 	<!-- END CampTix Badge Generator -->
 
