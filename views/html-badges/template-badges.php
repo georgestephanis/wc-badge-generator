@@ -35,11 +35,11 @@ if ( isset( $template ) && __FILE__ == $template ) {
 				?>
 
 				<article class="attendee <?php echo esc_attr( $attendee_data['ticket_slug'] ); ?>">
-					<section class="back">
+					<section class="badge badge-back">
 						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
 					</section>
 
-					<section class="front">
+					<section class="badge badge-front">
 						<div class="holepunch">&#9421;</div>
 
 						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
