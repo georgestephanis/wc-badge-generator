@@ -2,7 +2,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	'use strict';
 
 	var self = {
-		removedCss : false  // todo include in above [what did i mean by that?]       // todo rename?
+		removedCSS : false
 	};
 
 	// todo test in all browsers
@@ -27,19 +27,20 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	 */
 	self.updateCSS = function( newCSS ) {
 		try {
-			var badgeStyleElement = $( '#camptix-html-badges-css' );
+			var badgeStyleID      = 'camptix-html-badges-css',
+			    badgeStyleElement = $( '#' + badgeStyleID );
 
-			// todo clean this up
-
-			if ( ! self.removedCss ) {
+			// In order to set the content of a <style> element, you first have to remove it and re-create it.
+			if ( ! self.removedCSS ) {
 				badgeStyleElement.remove();
-				$( '<style/>', {
-					type: 'text/css',
-					id: 'camptix-html-badges-css'
+
+				$( '<style />', {
+					type : 'text/css',
+					id   : badgeStyleID
 				} ).appendTo( 'head' );
 
-				self.removedCss = true;
-				badgeStyleElement = $( '#camptix-html-badges-css' );
+				self.removedCSS   = true;
+				badgeStyleElement = $( '#' + badgeStyleID );
 			}
 
 			badgeStyleElement.text( newCSS ); // todo high - xss?

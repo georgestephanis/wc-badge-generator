@@ -3,11 +3,13 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 
 	var self = {
 		sectionID     : 'section_camptix_html_badges',
+		cssSettingID  : 'setting_camptix_html_badge_css',
 		badgesPageURL : window.location.protocol + '//' + window.location.hostname + '?camptix-badges',    // todo high - safe?
 		cmEditor      : null
 	};
 
 	// todo test in all browsers
+	// todo change "save & publish" to just "save" ?
 
 	/**
 	 * Initialize
@@ -67,15 +69,11 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 				}
 			);
 
-			// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
-			//self.cmEditor.setSize( null, 400 );  // todo high - probably don't need, or want to do 100%
+			self.cmEditor.setSize( null, 'auto' );
 
-			// Update the Customizer textarea when the CodeMirror textarea changes
-			self.cmEditor.on( 'change', _.bind( function( editor ) {
-				api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
-			}, this ) );
-
-			// todo modularize some of this?
+			self.cmEditor.on( 'change', function() {
+				api( self.cssSettingID ).set( self.cmEditor.getValue() );
+			} );
 		} catch( exception ) {
 			self.log( exception );
 		}
@@ -87,6 +85,9 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.printBadges = function( event ) {
+		// todo high - compare PDF from this branch to PDF from master, to make sure it's close.
+			// will still need to test actual printing, but this'll be good until can do that
+
 		try {
 			window.frames[0].print();
 		} catch( exception ) {
@@ -106,7 +107,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 				// nope, doesn't look like it's available in JS anywhere. just make your own by using data attribute or a js var or something
 				// can use new 4.5 include_script whatever instead of localize_script
 
-			api( 'setting_camptix_html_badge_css' ).set( defaultCSS );
+			api( self.cssSettingID ).set( defaultCSS );
 			self.cmEditor.setValue( defaultCSS );
 		} catch( exception ) {
 			self.log( exception );

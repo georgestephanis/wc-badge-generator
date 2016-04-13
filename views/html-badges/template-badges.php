@@ -16,21 +16,17 @@ if ( isset( $template ) && __FILE__ == $template ) {
  * todo
  *
  * go through every line of this
- * show site logo, etc. maybe reuse some of default_single_og_image()?
- * more stuff from twentysixteen?
- * maybe break this up into differnt parts of name them like customizer-section.php, etc
+ * show 4.5 site logo, etc. header image? maybe reuse some of default_single_og_image()?
  *
  * add to documentation  that can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
 */
 
 ?><!DOCTYPE html>
-<html id="camptix-badge-generator" <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?>>
 
 <head>
 	<title><?php _e( 'CampTix HTML Badges', 'wordcamporg' ); ?></title>
-
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-
 	<?php wp_head(); ?>
 </head>
 
