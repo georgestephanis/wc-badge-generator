@@ -5,10 +5,11 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 		removedCss : false  // todo include in above [what did i mean by that?]       // todo rename?
 	};
 
-	// todo add try/catch to event handlers
-	// todo jsdoc for all
 	// todo test in all browsers
 
+	/**
+	 * Initialize
+	 */
 	self.initialize = function() {
 		try {
 			api( 'setting_camptix_html_badge_css', function( value ) {
@@ -25,22 +26,26 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	 * @param {string} newCSS
 	 */
 	self.updateCSS = function( newCSS ) {
-		var badgeStyleElement = $( '#camptix-html-badges-css' );
+		try {
+			var badgeStyleElement = $( '#camptix-html-badges-css' );
 
-		// todo clean this up
+			// todo clean this up
 
-		if ( ! self.removedCss ) {
-			badgeStyleElement.remove();
-			$( '<style/>', {
-				type: 'text/css',
-				id: 'camptix-html-badges-css'
-			} ).appendTo( 'head' );
+			if ( ! self.removedCss ) {
+				badgeStyleElement.remove();
+				$( '<style/>', {
+					type: 'text/css',
+					id: 'camptix-html-badges-css'
+				} ).appendTo( 'head' );
 
-			self.removedCss = true;
-			badgeStyleElement = $( '#camptix-html-badges-css' );
+				self.removedCss = true;
+				badgeStyleElement = $( '#camptix-html-badges-css' );
+			}
+
+			badgeStyleElement.text( newCSS ); // todo xss?
+		} catch( exception ) {
+			self.log( exception );
 		}
-
-		badgeStyleElement.text( newCSS ); // todo xss?
 	};
 
 	/**
@@ -64,7 +69,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 		}
 	};
 
-	self.initialize();    // todo need to wait until something is ready?
+	self.initialize();
 	return self;
 
 } ( jQuery, wp.customize ) );
