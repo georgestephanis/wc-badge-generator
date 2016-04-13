@@ -10,8 +10,9 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 
 	self.badgesPageURL = self.siteURL + '?camptix-badges';
 
-	// todo high - test in all browsers
-	
+	$.extend( self, cbgHtmlCustomizerData );
+	window.cbgHtmlCustomizerData = null;
+
 	/**
 	 * Initialize
 	 */
@@ -100,13 +101,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.resetCSS = function( event ) {
 		try {
-			var defaultCSS = 'body { background-color: blue; }';    // todo high
-			// todo i think there's a way through api() to reset to orig value, or at least retrieve orig value and set()
-				// nope, doesn't look like it's available in JS anywhere. just make your own by using data attribute or a js var or something
-				// can use new 4.5 include_script whatever instead of localize_script
-
-			api( self.cssSettingID ).set( defaultCSS );
-			self.cmEditor.setValue( defaultCSS );
+			api( self.cssSettingID ).set( self.defaultCSS );    // todo high - xss?
+			self.cmEditor.setValue( self.defaultCSS );          // todo high - xss?
 		} catch( exception ) {
 			self.log( exception );
 		}

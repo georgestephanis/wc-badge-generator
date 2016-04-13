@@ -14,6 +14,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * todo v1
  *
  * high - need someone to actually test printing, since i don't have a printer
+ * high - test in all browsers
  * 
  * can use the ? icon like the Menus section does if too much help text
  * in help text
@@ -31,9 +32,6 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 
 /*
  * todo v2
- *
- * // todo maybe use window.onerror instead of try/catch everywhere? but only if another script hasn't registered a handler
- *		// would need to do one for all wcorg, not just this plugin. but maybe it's best to let errors stop everything, just like in php
  *
  * shows sample image in admin page for both types.
  *	use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
@@ -144,6 +142,17 @@ function enqueue_customizer_scripts() {
 		array( 'jquery', 'jetpack-css-codemirror' ),
 		1,
 		true
+	);
+
+	$default_css = file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' );
+
+	wp_localize_script(
+		'camptix-html-badges-customizer',
+		'cbgHtmlCustomizerData',
+		array(
+			'defaultCSS' => get_option( 'setting_camptix_html_badge_css', $default_css ),
+			// todo high - esc_js or json_encode or something needed here? pretty sure it's safe at this point b/c localize_script() json-encodes it. maybe not later on though.
+		)
 	);
 }
 
