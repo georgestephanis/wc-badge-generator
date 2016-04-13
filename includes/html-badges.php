@@ -206,7 +206,6 @@ function render_badges_template() {
 		'post_type'      => 'tix_attendee',
 		'posts_per_page' => -1,
 		'orderby'        => 'title',
-		'fields'         => 'ids',
 		'cache_results'  => false,  // todo necessary?
 	) );
 	
@@ -219,17 +218,17 @@ function render_badges_template() {
 /**
  * Get all the data required to render an attendee badge
  *
- * @param int $attendee_id
+ * @param \WP_Post $attendee
  *
  * @return array
  */
-function get_attendee_data( $attendee_id ) {
+function get_attendee_data( $attendee ) {
 	/** @var $camptix \CampTix_Plugin */
 	global $camptix;
-	$css_classes = array();
+	$css_classes = array( 'attendee-' . $attendee->post_name );
 
-	$first_name     = get_post_meta( $attendee_id, 'tix_first_name', true );
-	$last_name      = get_post_meta( $attendee_id, 'tix_last_name',  true );
+	$first_name     = get_post_meta( $attendee->ID, 'tix_first_name', true );
+	$last_name      = get_post_meta( $attendee->ID, 'tix_last_name',  true );
 	$formatted_name = $camptix->format_name_string(
 		'<span class="first-name">%first%</span>
 		 <span class="last-name">%last%</span>',
@@ -237,13 +236,13 @@ function get_attendee_data( $attendee_id ) {
 		$last_name
 	);
 
-	$email_address = get_post_meta( $attendee_id, 'tix_email', true );
+	$email_address = get_post_meta( $attendee->ID, 'tix_email', true );
 	$avatar_url    = get_avatar_url( $email_address, array( 'size' => 600 ) );
 
-	$ticket        = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
+	$ticket        = get_post( get_post_meta( $attendee->ID, 'tix_ticket_id', true ) );
 	$css_classes[] = 'ticket-' . $ticket->post_name;
 
-	$coupon_id = get_post_meta( $attendee_id, 'tix_coupon_id', true );
+	$coupon_id = get_post_meta( $attendee->ID, 'tix_coupon_id', true );
 	if ( $coupon_id ) {
 		$coupon        = get_post( $coupon_id );
 		$css_classes[] = 'coupon-' . $coupon->post_name;
