@@ -9,7 +9,7 @@ add_action( 'admin_menu', __NAMESPACE__ . '\add_admin_page' );
  * Register admin pages
  */
 function add_admin_page() {
-	// todo put this under tools? but then it won't be seen? probably correct to put it there, but need documentation
+	// todo high - put this under tools? but then it won't be seen? probably correct to put it there, but need documentation
         //  add to handbook, write post on make/comm
 
 	$hook_suffix = add_submenu_page(

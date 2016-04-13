@@ -2,17 +2,16 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	'use strict';
 
 	var self = {
-		sectionID     : 'section_camptix_html_badges',
-		cssSettingID  : 'setting_camptix_html_badge_css',
-		badgesPageURL : window.location.protocol + '//' + window.location.hostname + '?camptix-badges',    // todo high - safe?
-		cmEditor      : null
+		sectionID    : 'section_camptix_html_badges',
+		cssSettingID : 'setting_camptix_html_badge_css',
+		siteURL      : window.location.protocol + '//' + window.location.hostname,
+		cmEditor     : null
 	};
 
-	// todo test in all browsers
-	// todo change "save & publish" to just "save" ?
-	// todo maybe use window.onerror instead of try/catch everywhere? but only if another script hasn't registered a handler
-		// would need to do one for all wcorg, not just this plugin. but maybe it's best to let errors stop everything, just like in php
+	self.badgesPageURL = self.siteURL + '?camptix-badges';
 
+	// todo high - test in all browsers
+	
 	/**
 	 * Initialize
 	 */
@@ -51,7 +50,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.unloadBadgesPage = function( event ) {
 		if ( self.badgesPageURL === api.previewer.previewUrl.get() ) {
-			api.previewer.previewUrl.set( window.location.protocol + '//' + window.location.hostname );    // todo high - safe?
+			api.previewer.previewUrl.set( self.siteURL );
 		}
 	};
 
@@ -101,7 +100,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.resetCSS = function( event ) {
 		try {
-			var defaultCSS = 'body { background-color: blue; }';    // todo
+			var defaultCSS = 'body { background-color: blue; }';    // todo high
 			// todo i think there's a way through api() to reset to orig value, or at least retrieve orig value and set()
 				// nope, doesn't look like it's available in JS anywhere. just make your own by using data attribute or a js var or something
 				// can use new 4.5 include_script whatever instead of localize_script

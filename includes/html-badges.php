@@ -3,12 +3,12 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );
-add_action( 'admin_print_styles',    __NAMESPACE__ . '\print_customizer_styles'        );
-add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',         998 );
-add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
-add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'            );
+add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components'   );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'       );
+add_action( 'admin_print_styles',    __NAMESPACE__ . '\print_customizer_styles'          );
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_previewer_styles', 998 );
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts',   999 );  // after remove_all_previewer_styles()
+add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'              );
 
 /*
  * todo v1
@@ -19,6 +19,8 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
  * - can create different badges for speakers, sponsors, etc by targeting `attendee.ticket-{ticket_slug}` and/or attendee.coupon-{coupon_slug}
+ * - can target individual attendees with .attendee-{name} when need to tweak spedific badges. e.g., make a long name have smaller last name font size, etc
+ * - can target first and last name seperatly
  * - if accidentally reset, hit ctrl-z inside textarea to undo
  * - note that normalize.css is enqueued before your styles. you can override them.
  *
@@ -29,6 +31,15 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
 
 /*
  * todo v2
+ *
+ * // todo maybe use window.onerror instead of try/catch everywhere? but only if another script hasn't registered a handler
+ *		// would need to do one for all wcorg, not just this plugin. but maybe it's best to let errors stop everything, just like in php
+ *
+ * shows sample image in admin page for both types.
+ *	use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
+ *	or maybe
+ *	https://blogldc.s3.amazonaws.com/wp-content/uploads/2014/10/wordcamp_sf_mortenbadge.jpg
+ *	https://ma.tt/files/2014/10/MCM_2862.jpg
  *
  * improve the default design
  * add checkbox to include twitter, option for which image, option for name instead of image, etc
@@ -75,10 +86,7 @@ function register_customizer_components( $wp_customize ) {
 		'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
 		'input_attrs' => array(
 			'class' => 'button button-secondary',
-			'value' => __( 'Reset to Default', 'wordcamporg' ), // todo is that clear enough that it will be the default css, not their last saved version?
-
-			// todo make this an icon in the section title, but would need some kind of AYS.
-				// todo or just align next to each other. flex, but would need container. maybe float?
+			'value' => __( 'Reset to Default', 'wordcamporg' ),
 		),
 	) );
 
@@ -108,7 +116,7 @@ function register_customizer_components( $wp_customize ) {
 		)
 	);
 
-	// todo test that it saves modified css - looks good but haven't looked close
+	// todo high - test that it saves modified css - looks good but haven't looked close
 }
 
 /**
@@ -121,12 +129,12 @@ function enqueue_customizer_scripts() {
 	}
 
 	// Enqueue CodeMirror script and style, but dequeue extraneous Jetpack scripts and styles
-	// todo check if callable, if not, then require()
+	// todo high - check if callable, if not, then require()
 	\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
 
 	wp_dequeue_script( 'postbox' );
 	wp_dequeue_script( 'custom-css-editor' );
-	//wp_dequeue_style( 'custom-css-editor' );           //todo sometimes breaks
+	//wp_dequeue_style( 'custom-css-editor' );           //todo high - sometimes breaks
 	//wp_dequeue_style( 'jetpack-css-use-codemirror' );  //todo sometimes breaks
 	wp_dequeue_script( 'jetpack-css-use-codemirror' );
 
@@ -258,7 +266,7 @@ function get_attendee_data( $attendee ) {
  *
  * todo make dry w/ coming soon page?
  */
-function remove_all_styles() {
+function remove_all_previewer_styles() {
 	global $wp_styles;
 
 	if ( ! is_badges_preview() ) {
@@ -273,7 +281,7 @@ function remove_all_styles() {
 
 	remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
 
-	// todo remove remote-css?
+	// todo high - remove remote-css?
 }
 
 /**
@@ -312,7 +320,7 @@ function enqueue_previewer_scripts() {
 }
 
 /**
- * Print the saved badge CSS
+ * Print the saved custom badge CSS
  */
 function print_saved_styles() {
 	if ( ! is_badges_preview() ) {

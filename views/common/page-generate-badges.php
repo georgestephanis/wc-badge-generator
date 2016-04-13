@@ -27,8 +27,6 @@ defined( 'WPINC' ) or die();
 				<li><?php _e( "Can't be taken to a professional printer.",                                                        'wordcamporg' ); ?></li>
 			</ul>
 
-			<!-- todo show a sample image. ask george for one from his camp -->
-
 			<a class="button button-primary" href="<?php echo esc_url( $html_customizer_url ); ?>">
 				<?php _e( 'Create Badges with HTML and CSS', 'wordcamporg' ); ?>
 			</a>
@@ -48,13 +46,7 @@ defined( 'WPINC' ) or die();
 				</li>
 				<li><?php _e( 'Printed by a professional printer, or at home.', 'wordcamporg' ); ?></li>
 			</ul>
-
-			<!-- todo show a sample image. use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
-			or maybe
-			https://blogldc.s3.amazonaws.com/wp-content/uploads/2014/10/wordcamp_sf_mortenbadge.jpg
-			https://ma.tt/files/2014/10/MCM_2862.jpg
-			-->
-
+			
 			<a class="button button-primary" href="<?php echo esc_url( $indesign_page_url ); ?>">
 				<?php _e( 'Create Badges with InDesign', 'wordcamporg' ); ?>
 			</a>
