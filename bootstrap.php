@@ -12,7 +12,7 @@
 namespace CampTix\Badge_Generator;
 defined( 'WPINC' ) or die();
 
-const REQUIRED_CAPABILITY = 'manage_options';
+const REQUIRED_CAPABILITY = 'manage_options';   // todo editor would be fine?
 
 if ( is_admin() ) {
 	require_once( __DIR__ . '/includes/camptix-badge-generator.php' );

@@ -17,6 +17,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
  * - can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
+ * - if accidentally reset, hit ctrl-z inside textarea to undo
  *
  * update handbook/plan docs
  * write a launch post for make/community
@@ -47,7 +48,7 @@ function register_customizer_components( $wp_customize ) {
 	);
 
 	// todo better names for settings and controls. prefix instead of entire name, more descriptive
-	//
+
 	$wp_customize->add_control( 'cbg_control_print_badges', array(
 		'section'     => 'section_camptix_html_badges',
 		'settings'    => array(),
@@ -70,7 +71,7 @@ function register_customizer_components( $wp_customize ) {
 			'class' => 'button button-secondary',
 			'value' => __( 'Reset to Default', 'wordcamporg' ), // todo is that clear enough that it will be the default css, not their last saved version?
 
-			// todo make this an icon in the section title, but would need some kind of AYS
+			// todo make this an icon in the section title, but would need some kind of AYS.
 				// todo or just align next to each other. flex, but would need container. maybe float?
 		),
 	) );
@@ -100,7 +101,7 @@ function register_customizer_components( $wp_customize ) {
 		)
 	);
 	
-	__("Make sure to use Firefox to print these badges.
+	__( "Make sure to use Firefox to print these badges.
 	 Some other browsers (like Chrome) don't respect some CSS properties that we use to specify where page breaks should be.",
 	'wordcamporg');
 	// todo move from previewer to customizer, but takes up too much room. maybe add collapsable help control?
@@ -252,10 +253,6 @@ function remove_all_styles() {
  * Enqueue scripts and styles for the Previewer
  */
 function enqueue_previewer_scripts() {
-	if ( ! is_badges_preview() ) {
-		return;
-	}
-
 	wp_register_script(
 		'camptix-html-badges-previewer',
 		plugins_url( 'javascript/html-badges-previewer.js', __DIR__ ),
@@ -264,21 +261,11 @@ function enqueue_previewer_scripts() {
 		true
 	);
 
-	wp_register_style(
-		'camptix-html-badges-previewer',  //todo rename after split
-		plugins_url( 'css/camptix-badge-generator.css', __DIR__ ),
-		array(),
-		1
-	);
-
-	if ( false ) {
-		// todo only in customizer  -- is there another method for that?
+	if ( ! is_badges_preview() ) {
 		return;
 	}
 
 	wp_enqueue_script( 'camptix-html-badges-previewer' );
-	wp_enqueue_style( 'camptix-html-badges' );
-
 	add_action( 'wp_print_styles', __NAMESPACE__ . '\print_saved_styles' ); // done here so it is registered after remove_all_styles()
 }
 
