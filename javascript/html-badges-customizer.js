@@ -1,27 +1,75 @@
-( function( wp, $ ) {
+wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	'use strict';
 
-	if ( ! wp || ! wp.customize ) {
-		return;
-	}
+	var self = {
+		cmEditor : null
+	};
 
-	var api = wp.customize;
-	
-	// todo add try/catch
-	
+	// todo add try/catch to event handlers
+	// todo jsdoc for all
+	// todo test in all browsers
+
+	self.initialize = function() {
+		try {
+			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded', self.setupCodeMirror );
+
+			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
+			$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
+		} catch( exception ) {
+			self.log( exception );
+		}
+	};
+
+	self.setupCodeMirror = function( event ) {
+		self.cmEditor = CodeMirror.fromTextArea(
+			$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
+			{
+				tabSize        : 2,
+				indentWithTabs : true,
+				lineWrapping   : true
+			}
+		);
+
+		// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
+		//self.cmEditor.setSize( null, 400 );  // todo high - probably don't need, or want to do 100%
+
+		// Update the Customizer textarea when the CodeMirror textarea changes
+		self.cmEditor.on( 'change', _.bind( function( editor ) {
+			api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
+		}, this ) );
+
+		// todo modularize some of this?
+	};
+
+	self.printBadges = function( event ) {
+		window.frames[0].print();
+	};
+
+	self.resetCSS = function( event ) {
+		var defaultCSS = 'body { background-color: blue; }';    // todo
+		// todo i think there's a way through api() to reset to orig value, or at least retrieve orig value and set()
+			// nope, doesn't look like it's available in JS anywhere. just make your own by using data attribute or a js var or something
+			// can use new 4.5 include_script whatever instead of localize_script
+
+		api( 'setting_camptix_html_badge_css' ).set( defaultCSS );
+		self.cmEditor.setValue( defaultCSS );
+	};
+
 	/**
 	 * The CampTix HTML Badges panel
 	 */
 	api.sectionConstructor.cbgSection = api.Section.extend( {
+		// todo can/should probably redo this as a function that gets called from self.init. prob no need to extend Section?
+
 		/**
 		 * Open this section when it's directly requested via a URL parameter
 		 */
 		ready : function() {
-			var urlParams = getUrlParams( window.location.href );
+			var urlParams = self.getUrlParams( window.location.href );
 
 			// todo could just do this with string search and get rid of the function?
 
-			
+
 			if ( ! urlParams.hasOwnProperty( 'url' ) ) {    // todo maybe need to be mroe specific, make sure it has camptix-badges in url
 				// todo when open customizer directly, then click on section, need to set on previerwe url to `{site_url}?camptix-badges`
 				// might need to be somewhere different than here, like onclick handler or something
@@ -39,85 +87,6 @@
 	} );
 
 	/**
-	 * todo
-	 */
-	api.controlConstructor.button = api.Control.extend( {
-		/**
-		 * Initialize the control after it's loaded
-		 */
-		ready : function() {
-			if ( 'cbg_control_print_badges' !== this.id ) {
-				return;
-			}
-
-			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( function() {
-				window.frames[0].print();
-			} );
-		}
-	} );
-
-	/**
-	 * todo
-	 *
-	 * todo high - this does overwrite the earlier button and breaks it
-	api.controlConstructor.button = api.Control.extend( {
-		/**
-		 * Initialize the control after it's loaded
-		 *
-		ready : function() {
-			if ( 'cbg_control_reset_css' !== this.id ) {
-				return;
-			}
-
-			$( '#customize-control-cbg_control_reset_css' ).find( 'input[type=button]' ).click( function() {
-				//api( 'setting_camptix_html_badge_css' ).
-				// todo i think there's a way through api() to reset to orig value, or at least retrieve orig value and set()
-					// doesn't look like it's available in JS anywhere, just make your own by using data attribute or a js var or something
-					// can use new 4.5 include_script whatever instead of localize_script
-			} );
-
-			// todo can i extend button twice? think i might need to just do it once, and maybe even shouldn't do it, b/c what if other plugin does it too?
-				// it works, but probably overwrites the first one, so don't want that. could just have a single one, but there's probably a better practice
-				// look at how good plugins do it
-		}
-	} );*/
-
-	/**
-	 * todo
-	 */
-	api.controlConstructor.textarea = api.Control.extend( {
-		/**
-		 * Initialize the control after it's loaded
-		 */
-		ready : function() {
-			if ( 'setting_camptix_html_badge_css' !== this.id ) {
-				return;
-			}
-
-			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded', function() {
-				// todo should do this from the section? prob not
-				
-				var cmEditor = CodeMirror.fromTextArea(
-					$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
-					{
-						tabSize        : 2,
-						indentWithTabs : true,
-						lineWrapping   : true
-					}
-				);
-
-				// todo set height? seems to be done automatically, but maybe want it 100% insetad of fixed 500px
-				//cmEditor.setSize( null, 400 );  // todo high - probably don't need, or want to do 100%
-
-				// Update the Customizer textarea when the CodeMirror textarea changes
-				cmEditor.on( 'change', _.bind( function( editor ) {
-					api( 'setting_camptix_html_badge_css' ).set( editor.getValue() );
-				}, this ) );
-			} );
-		}
-	} );
-	
-	/**
 	 * todo make dry with site cloner?
 	 * todo still using this now that have autofocus? maybe for url param
 	 *
@@ -129,7 +98,7 @@
 	 *
 	 * @returns {object}
 	 */
-	function getUrlParams( url ) {
+	self.getUrlParams = function( url ) {
 		var match, questionMarkIndex, query,
 			urlParams = {},
 			pl        = /\+/g,  // Regex for replacing addition symbol with a space
@@ -151,5 +120,30 @@
 		}
 
 		return urlParams;
-	}
-} )( window.wp, jQuery );
+	};
+
+	/**
+	 * Log a message to the console
+	 * 
+	 * @todo make DRY with CampTixHtmlBadgesPreviewer
+	 *
+	 * @param {*} error
+	 */
+	self.log = function( error ) {
+		var messageLabel = 'CampTix HTML Badges: ';
+
+		if ( ! window.console ) {
+			return;
+		}
+
+		if ( 'string' === typeof error ) {
+			console.log( messageLabel + error );
+		} else {
+			console.log( messageLabel, error );
+		}
+	};
+
+	api.bind( 'ready', self.initialize );
+	return self;
+
+} ( jQuery, wp.customize ) );
