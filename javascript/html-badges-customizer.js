@@ -2,7 +2,9 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	'use strict';
 
 	var self = {
-		cmEditor : null
+		sectionID     : 'section_camptix_html_badges',
+		badgesPageURL : window.location.protocol + '//' + window.location.hostname + '?camptix-badges',    // todo high - safe?
+		cmEditor      : null
 	};
 
 	// todo test in all browsers
@@ -12,9 +14,9 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.initialize = function() {
 		try {
-			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded',  self.loadBadgesPage   );
-			api.section( 'section_camptix_html_badges' ).container.bind( 'collapsed', self.unloadBadgesPage );
-			api.section( 'section_camptix_html_badges' ).container.bind( 'expanded',  self.setupCodeMirror  );
+			api.section( self.sectionID ).container.bind( 'expanded',  self.loadBadgesPage   );
+			api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage );
+			api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror  );
 
 			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
 			$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
@@ -30,14 +32,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.loadBadgesPage = function( event ) {
 		try {
-			var urlParams = self.getUrlParams( window.location.href );
-
-			// todo could just do this with string search and get rid of the function?
-
-			if ( ! urlParams.hasOwnProperty( 'url' ) ) {    // todo maybe need to be mroe specific, make sure it has camptix-badges in url
-				wp.customize.previewer.previewUrl.set( 'https://2014.content.wordcamp.dev/?camptix-badges' );
-				// todo dynamic
-				// todo need to strip URL params for safety. just get base URL then append/remove camptix-badges param
+			if ( self.badgesPageURL !== api.previewer.previewUrl.get() ) {
+				api.previewer.previewUrl.set( self.badgesPageURL );
 			}
 		} catch ( exception ) {
 			self.log( exception );
@@ -50,8 +46,9 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.unloadBadgesPage = function( event ) {
-		wp.customize.previewer.previewUrl.set( 'https://2014.content.wordcamp.dev/' );
-		// todo dynamic, strip params
+		if ( self.badgesPageURL === api.previewer.previewUrl.get() ) {
+			api.previewer.previewUrl.set( window.location.protocol + '//' + window.location.hostname );    // todo high - safe?
+		}
 	};
 
 	/**
@@ -114,42 +111,6 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 		} catch( exception ) {
 			self.log( exception );
 		}
-	};
-
-	/**
-	 * todo make dry with site cloner?
-	 * todo still using this now that have autofocus? maybe for url param
-	 *
-	 * Parse the URL parameters
-	 *
-	 * Based on https://stackoverflow.com/a/2880929/450127
-	 *
-	 * @param {string} url
-	 *
-	 * @returns {object}
-	 */
-	self.getUrlParams = function( url ) {
-		var match, questionMarkIndex, query,
-			urlParams = {},
-			pl        = /\+/g,  // Regex for replacing addition symbol with a space
-			search    = /([^&=]+)=?([^&]*)/g,
-			decode    = function ( s ) {
-				return decodeURIComponent( s.replace( pl, " " ) );
-			};
-
-		questionMarkIndex = url.indexOf( '?' );
-
-		if ( -1 === questionMarkIndex ) {
-			return urlParams;
-		} else {
-			query = url.substring( questionMarkIndex + 1 );
-		}
-
-		while ( match = search.exec( query ) ) {
-			urlParams[ decode( match[ 1 ] ) ] = decode( match[ 2 ] );
-		}
-
-		return urlParams;
 	};
 
 	/**
