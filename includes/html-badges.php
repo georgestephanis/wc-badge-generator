@@ -4,22 +4,29 @@ namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
 add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components' );
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );  // todo more generic name?
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'     );
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_styles',         998 );
 add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts', 999 );  // after remove_all_styles()
 add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'            );
 
-// todo need someone to actually test printing, since i don't have a printer
-// todo write a launch post for make/community
-// todo maybe make the section a bit wider, but not too much
-// can use the ? icon like the Menus section does if too much help text
-	// in help text, link to notify tool to email people to sign up for gravatar w/ their camptix email addr
-// can use teh [gear] icon like the Menus section does for options like including twitter field, etc
+/*
+ * todo v1
+ *
+ * high - need someone to actually test printing, since i don't have a printer
+ * can use the ? icon like the Menus section does if too much help text
+ * in help text
+ * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
+ * - can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
+ *
+ * update handbook/plan docs
+ * write a launch post for make/community
+ */
 
 /*
  * todo v2
  * 
  * add checkbox to include twitter, etc
+ * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
  */
 
 	
@@ -114,11 +121,10 @@ function enqueue_customizer_scripts() {
 		return;
 	}
 
-	// Enqueue CodeMirror script and style
+	// Enqueue CodeMirror script and style, but dequeue extraneous Jetpack scripts and styles
 	// todo check if callable, if not, then require()
 	\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
 
-	// Dequeue extraneous Jetpack scripts and styles
 	wp_dequeue_script( 'postbox' );
 	wp_dequeue_script( 'custom-css-editor' );
 	//wp_dequeue_style( 'custom-css-editor' );           //todo sometimes breaks
@@ -168,20 +174,55 @@ function use_badges_template( $template ) {
  * Render the template for HTML badges
  */
 function render_badges_template() {
+	/** @var $camptix \CampTix_Plugin */
 	global $camptix;
+	
+	$allowed_html = array(
+		'span' => array(
+			'class' => true,
+		),
+	);
 	
 	$attendees = get_posts( array(
 		'post_type'      => 'tix_attendee',
 		'posts_per_page' => -1,
 		'orderby'        => 'title',
-		'fields'         => 'ids', // ! no post objects
-		'cache_results'  => false,
+		'fields'         => 'ids',
+		'cache_results'  => false,  // todo necessary?
 	) );
 	
 	// Disable object cache for prepared metadata.
 	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );  // todo necessary?
 
 	require( dirname( __DIR__ ) . '/views/html-badges/template-badges.php' );
+}
+
+/**
+ * Get all the data required to render an attendee badge
+ *
+ * @param int $attendee_id
+ *
+ * @return array
+ */
+function get_attendee_data( $attendee_id ) {
+	/** @var $camptix \CampTix_Plugin */
+	global $camptix;
+
+	$first_name     = get_post_meta( $attendee_id, 'tix_first_name', true );
+	$last_name      = get_post_meta( $attendee_id, 'tix_last_name',  true );
+	$formatted_name = $camptix->format_name_string(
+		'<span class="first">%first%</span> <span class="last">%last%</span>',
+		$first_name,
+		$last_name
+	);
+
+	$email_address = get_post_meta( $attendee_id, 'tix_email', true );
+	$avatar_url    = get_avatar_url( $email_address, array( 'size' => 600 ) );
+
+	$ticket      = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
+	$ticket_slug = $ticket->post_name;
+
+	return compact( 'formatted_name', 'email_address', 'avatar_url', 'ticket_slug' );
 }
 
 /**

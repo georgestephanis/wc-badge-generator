@@ -13,12 +13,7 @@ if ( isset( $template ) && __FILE__ == $template ) {
 }
 
 /*
- * todo
  *
- * go through every line of this
- * show 4.5 site logo, etc. header image? maybe reuse some of default_single_og_image()?
- *
- * add to documentation  that can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
 */
 
 ?><!DOCTYPE html>
@@ -39,51 +34,19 @@ if ( isset( $template ) && __FILE__ == $template ) {
 		else :
 
 			foreach ( $attendees as $attendee_id ) :
-				$first  = get_post_meta( $attendee_id, 'tix_first_name', true );
-				$last   = get_post_meta( $attendee_id, 'tix_last_name',  true );
-				$name   = $camptix->format_name_string( '<span class="tix-first">%first%</span> <span class="tix-last">%last%</span>', esc_html( $first ), esc_html( $last ) );    // todo escape late
-				$email  = get_post_meta( $attendee_id, 'tix_email', true );
-				$avatar = get_avatar_url( $email, array( 'size' => 600 ) );
-				$ticket = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
-
+				$attendee_data = get_attendee_data( $attendee_id );
+				
 				?>
 
-				<article class="attendee <?php echo esc_attr( $ticket->post_name ); ?>">
+				<article class="attendee <?php echo esc_attr( $attendee_data['ticket_slug'] ); ?>">
 					<section class="back">
-						<header>
-							<?php if ( has_custom_logo() ) : ?>
-								<?php the_custom_logo(); ?>
-							<?php else : ?>
-								<h1><?php bloginfo( 'name' ); ?></h1>
-							<?php endif; ?>
-						</header>
-
-						<figure>
-							<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
-							<figcaption>
-								<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
-							</figcaption>
-						</figure>
+						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
 					</section>
 
 					<section class="front">
 						<div class="holepunch">&#9421;</div>
 
-						<!-- todo just reuse above instead of duplicating? -->
-						<header>
-							<?php if ( has_custom_logo() ) : ?>
-								<?php the_custom_logo(); ?>
-							<?php else : ?>
-								<h1><?php bloginfo( 'name' ); ?></h1>
-							<?php endif; ?>
-						</header>
-
-						<figure>
-							<img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $first .' '. $last ); ?>" />
-							<figcaption>
-								<h3 class="name"><?php echo $name; /* already escaped above */ ?></h3>
-							</figcaption>
-						</figure>
+						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
 					</section>
 				</article>
 			<?php endforeach; ?>
