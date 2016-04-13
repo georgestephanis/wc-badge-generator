@@ -17,16 +17,12 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * Initialize
 	 */
 	self.initialize = function() {
-		try {
-			api.section( self.sectionID ).container.bind( 'expanded',  self.loadBadgesPage   );
-			api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage );
-			api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror  );
+		api.section( self.sectionID ).container.bind( 'expanded',  self.loadBadgesPage   );
+		api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage );
+		api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror  );
 
-			$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
-			$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
-		} catch( exception ) {
-			self.log( exception );
-		}
+		$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
+		$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
 	};
 
 	/**
@@ -35,12 +31,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.loadBadgesPage = function( event ) {
-		try {
-			if ( self.badgesPageURL !== api.previewer.previewUrl.get() ) {
-				api.previewer.previewUrl.set( self.badgesPageURL );
-			}
-		} catch ( exception ) {
-			self.log( exception );
+		if ( self.badgesPageURL !== api.previewer.previewUrl.get() ) {
+			api.previewer.previewUrl.set( self.badgesPageURL );
 		}
 	};
 
@@ -61,24 +53,20 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.setupCodeMirror = function( event ) {
-		try {
-			self.cmEditor = CodeMirror.fromTextArea(
-				$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
-				{
-					tabSize        : 2,
-					indentWithTabs : true,
-					lineWrapping   : true
-				}
-			);
+		self.cmEditor = CodeMirror.fromTextArea(
+			$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
+			{
+				tabSize        : 2,
+				indentWithTabs : true,
+				lineWrapping   : true
+			}
+		);
 
-			self.cmEditor.setSize( null, 'auto' );
+		self.cmEditor.setSize( null, 'auto' );
 
-			self.cmEditor.on( 'change', function() {
-				api( self.cssSettingID ).set( self.cmEditor.getValue() );
-			} );
-		} catch( exception ) {
-			self.log( exception );
-		}
+		self.cmEditor.on( 'change', function() {
+			api( self.cssSettingID ).set( self.cmEditor.getValue() );
+		} );
 	};
 
 	/**
@@ -87,11 +75,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.printBadges = function( event ) {
-		try {
-			window.frames[0].print();
-		} catch( exception ) {
-			self.log( exception );
-		}
+		window.frames[0].print();
 	};
 
 	/**
@@ -100,33 +84,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.resetCSS = function( event ) {
-		try {
-			api( self.cssSettingID ).set( self.defaultCSS );    // todo high - xss?
-			self.cmEditor.setValue( self.defaultCSS );          // todo high - xss?
-		} catch( exception ) {
-			self.log( exception );
-		}
-	};
-
-	/**
-	 * Log a message to the console
-	 *
-	 * @todo make DRY with CampTixHtmlBadgesPreviewer
-	 *
-	 * @param {*} error
-	 */
-	self.log = function( error ) {
-		var messageLabel = 'CampTix HTML Badges: ';
-
-		if ( ! window.console ) {
-			return;
-		}
-
-		if ( 'string' === typeof error ) {
-			console.log( messageLabel + error );
-		} else {
-			console.log( messageLabel, error );
-		}
+		api( self.cssSettingID ).set( self.defaultCSS );    // todo high - xss?
+		self.cmEditor.setValue( self.defaultCSS );          // todo high - xss?
 	};
 
 	api.bind( 'ready', self.initialize );

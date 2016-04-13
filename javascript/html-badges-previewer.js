@@ -9,13 +9,9 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	 * Initialize
 	 */
 	self.initialize = function() {
-		try {
-			api( 'setting_camptix_html_badge_css', function( value ) {
-				value.bind( self.updateCSS );
-			} );
-		} catch( exception ) {
-			self.log( exception );
-		}
+		api( 'setting_camptix_html_badge_css', function( value ) {
+			value.bind( self.updateCSS );
+		} );
 	};
 
 	/**
@@ -24,48 +20,23 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	 * @param {string} newCSS
 	 */
 	self.updateCSS = function( newCSS ) {
-		try {
-			var badgeStyleID      = 'camptix-html-badges-css',
-			    badgeStyleElement = $( '#' + badgeStyleID );
+		var badgeStyleID      = 'camptix-html-badges-css',
+		    badgeStyleElement = $( '#' + badgeStyleID );
 
-			// In order to set the content of a <style> element, you first have to remove it and re-create it.
-			if ( ! self.removedCSS ) {
-				badgeStyleElement.remove();
+		// In order to set the content of a <style> element, you first have to remove it and re-create it.
+		if ( ! self.removedCSS ) {
+			badgeStyleElement.remove();
 
-				$( '<style />', {
-					type : 'text/css',
-					id   : badgeStyleID
-				} ).appendTo( 'head' );
+			$( '<style />', {
+				type : 'text/css',
+				id   : badgeStyleID
+			} ).appendTo( 'head' );
 
-				self.removedCSS   = true;
-				badgeStyleElement = $( '#' + badgeStyleID );
-			}
-
-			badgeStyleElement.text( newCSS ); // todo high - xss?
-		} catch( exception ) {
-			self.log( exception );
-		}
-	};
-
-	/**
-	 * Log a message to the console
-	 *
-	 * @todo make DRY with CampTixHtmlBadgesCustomeizer
-	 *
-	 * @param {*} error
-	 */
-	self.log = function( error ) {
-		var messageLabel = 'CampTix HTML Badges: ';
-
-		if ( ! window.console ) {
-			return;
+			self.removedCSS   = true;
+			badgeStyleElement = $( '#' + badgeStyleID );
 		}
 
-		if ( 'string' === typeof error ) {
-			console.log( messageLabel + error );
-		} else {
-			console.log( messageLabel, error );
-		}
+		badgeStyleElement.text( newCSS ); // todo high - xss?
 	};
 
 	self.initialize();
