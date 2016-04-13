@@ -25,7 +25,7 @@ if ( isset( $template ) && __FILE__ == $template ) {
 	<?php
 		if ( empty( $attendees ) ) :
 
-			_e( 'No attendees were found. Please try again after registration has opened.', 'wordcamporg' );
+			_e( 'No attendees were found. Please try again tickets have been purchased.', 'wordcamporg' );
 
 		else :
 
@@ -34,7 +34,7 @@ if ( isset( $template ) && __FILE__ == $template ) {
 				
 				?>
 
-				<article class="attendee <?php echo esc_attr( $attendee_data['ticket_slug'] ); ?>">
+				<article class="attendee <?php echo esc_attr( $attendee_data['css_classes'] ); ?>">
 					<section class="badge badge-back">
 						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
 					</section>

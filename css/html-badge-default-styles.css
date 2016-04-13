@@ -52,11 +52,12 @@ html, body {
 }
 
 .attendee-avatar {
-	max-width: 50%;
+	max-width: 70%;
 	height: auto;
 	border-radius: 50%;
 }
 
 .attendee-name {
 	margin: 0;
+	font-size: 2.4em;
 }

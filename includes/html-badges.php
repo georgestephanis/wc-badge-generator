@@ -22,7 +22,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * can use the ? icon like the Menus section does if too much help text
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
- * - can create different badges for speakers, sponsors, etc by targeting `attendee.{ticket_slug}`
+ * - can create different badges for speakers, sponsors, etc by targeting `attendee.ticket-{ticket_slug}` and/or attendee.coupon-{coupon_slug}
  * - if accidentally reset, hit ctrl-z inside textarea to undo
  * - note that normalize.css is enqueued before your styles. you can override them.
  *
@@ -208,11 +208,13 @@ function render_badges_template() {
 function get_attendee_data( $attendee_id ) {
 	/** @var $camptix \CampTix_Plugin */
 	global $camptix;
+	$css_classes = array();
 
 	$first_name     = get_post_meta( $attendee_id, 'tix_first_name', true );
 	$last_name      = get_post_meta( $attendee_id, 'tix_last_name',  true );
 	$formatted_name = $camptix->format_name_string(
-		'<span class="first">%first%</span> <span class="last">%last%</span>',
+		'<span class="first-name">%first%</span>
+		 <span class="last-name">%last%</span>',
 		$first_name,
 		$last_name
 	);
@@ -220,10 +222,18 @@ function get_attendee_data( $attendee_id ) {
 	$email_address = get_post_meta( $attendee_id, 'tix_email', true );
 	$avatar_url    = get_avatar_url( $email_address, array( 'size' => 600 ) );
 
-	$ticket      = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
-	$ticket_slug = $ticket->post_name;
+	$ticket        = get_post( get_post_meta( $attendee_id, 'tix_ticket_id', true ) );
+	$css_classes[] = 'ticket-' . $ticket->post_name;
 
-	return compact( 'formatted_name', 'email_address', 'avatar_url', 'ticket_slug' );
+	$coupon_id = get_post_meta( $attendee_id, 'tix_coupon_id', true );
+	if ( $coupon_id ) {
+		$coupon        = get_post( $coupon_id );
+		$css_classes[] = 'coupon-' . $coupon->post_name;
+	}
+
+	$css_classes = implode( ' ', $css_classes );
+
+	return compact( 'formatted_name', 'email_address', 'avatar_url', 'css_classes' );
 }
 
 /**
