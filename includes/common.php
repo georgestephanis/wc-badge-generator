@@ -50,7 +50,7 @@ function print_admin_styles() {
 
 	<!-- BEGIN CampTix Badge Generator -->
 	<style type="text/css">
-		<?php require_once( dirname( __DIR__ ) . '/css/admin-pages.css' ); ?>
+		<?php require_once( dirname( __DIR__ ) . '/css/common.css' ); ?>
 	</style>
 	<!-- END CampTix Badge Generator -->
 

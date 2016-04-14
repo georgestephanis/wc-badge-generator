@@ -15,8 +15,8 @@ defined( 'WPINC' ) or die();
 const REQUIRED_CAPABILITY = 'manage_options';   // todo editor would be fine?
 
 if ( is_admin() ) {
-	require_once( __DIR__ . '/includes/camptix-badge-generator.php' );
-	require_once( __DIR__ . '/includes/indesign-badges.php'         );
+	require_once( __DIR__ . '/includes/common.php'          );
+	require_once( __DIR__ . '/includes/indesign-badges.php' );
 }
 
 require_once( __DIR__ . '/includes/html-badges.php' );

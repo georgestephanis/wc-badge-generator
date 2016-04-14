@@ -23,7 +23,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 		var badgeStyleID      = 'camptix-html-badges-css',
 		    badgeStyleElement = $( '#' + badgeStyleID );
 
-		// In order to set the content of a <style> element, you first have to remove it and re-create it.
+		// In order to set the content of a <style> element, you first have to remove it once and re-create it.
 		if ( ! self.removedCSS ) {
 			badgeStyleElement.remove();
 
