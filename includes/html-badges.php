@@ -9,6 +9,12 @@ defined( 'WPINC' ) or die();
  *
  * high - need someone to actually test printing, since i don't have a printer
  * high - test in all browsers
+ *  - big spacing diff between firefox and chrome
+ *  - also, and possibly related, page-breaking issues in chrome/safari
+ *  - lots of potential solutions on stackoverflow, but none worked so far.
+ *  - maybe just say 'use firefox' for v1. or maybe  try to build minimal snippet and work up from there until find problem
+ *  - may need to make font size and avatar size smaller, but prob not if can fix chrome page-break issues
+ *  - want overflow:hiden in theory, but may mess up chrome page breaking
  *
  * can use the ? icon like the Menus section does if too much help text
  * in help text
@@ -162,13 +168,11 @@ function enqueue_customizer_scripts() {
 		true
 	);
 
-	$default_css = file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' );
-
 	wp_localize_script(
 		'camptix-html-badges-customizer',
 		'cbgHtmlCustomizerData',
 		array(
-			'defaultCSS' => get_option( 'setting_camptix_html_badge_css', $default_css ),
+			'defaultCSS' => file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' ),
 			// todo high - esc_js or json_encode or something needed here? pretty sure it's safe at this point b/c localize_script() json-encodes it. maybe not later on though.
 		)
 	);
