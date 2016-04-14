@@ -54,6 +54,10 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.setupCodeMirror = function( event ) {
+		if ( self.cmEditor !== null ) {
+			return;
+		}
+
 		self.cmEditor = CodeMirror.fromTextArea(
 			$( '#customize-control-cbg_badge_css' ).find( 'textarea' ).get(0),
 			{
@@ -76,7 +80,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.showBrowserWarning = function( event ) {
-		// Rendering engine string must include the / to prevent matching things like "like Gecko" in Chrome/Safari
+		// Rendering engine string must include the "/" to prevent matching things like "like Gecko" in Chrome/Safari
 		if ( navigator.userAgent.toLowerCase().indexOf( 'gecko/' ) === -1 ) {
 			$( '#cbg-firefox-recommended' ).removeClass( 'hidden' );
 		}
@@ -98,7 +102,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.resetCSS = function( event ) {
 		api( self.cssSettingID ).set( self.defaultCSS );    // todo high - xss?
-		self.cmEditor.setValue( self.defaultCSS );          // todo high - xss?
+		self.cmEditor.setValue(       self.defaultCSS );    // todo high - xss?
 	};
 
 	api.bind( 'ready', self.initialize );
