@@ -1,21 +1,15 @@
 <?php
 
 namespace CampTix\Badge_Generator\HTML;
+use \CampTix\Badge_Generator;
 defined( 'WPINC' ) or die();
-
-add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components'   );
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'       );
-add_action( 'admin_print_styles',    __NAMESPACE__ . '\print_customizer_styles'          );
-add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_previewer_styles', 998 );
-add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts',   999 );  // after remove_all_previewer_styles()
-add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'              );
 
 /*
  * todo v1
  *
  * high - need someone to actually test printing, since i don't have a printer
  * high - test in all browsers
- * 
+ *
  * can use the ? icon like the Menus section does if too much help text
  * in help text
  * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
@@ -24,6 +18,7 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * - can target first and last name seperatly
  * - if accidentally reset, hit ctrl-z inside textarea to undo
  * - note that normalize.css is enqueued before your styles. you can override them.
+ * - assembly intstructions: cut, folder in half, attach lanyard (fold in half bit may not be intuitive, so should mention it)
  *
  * update handbook/plan docs
  * write a launch post for make/community
@@ -44,7 +39,13 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
  */
 
-	
+add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components'   );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'       );
+add_action( 'admin_print_styles',    __NAMESPACE__ . '\print_customizer_styles'          );
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\remove_all_previewer_styles', 998 );
+add_action( 'wp_enqueue_scripts',    __NAMESPACE__ . '\enqueue_previewer_scripts',   999 );  // after remove_all_previewer_styles()
+add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'              );
+
 /**
  * Register our Customizer settings, panels, sections, and controls
  *
@@ -54,7 +55,7 @@ function register_customizer_components( $wp_customize ) {
 	$wp_customize->add_section(
 		'section_camptix_html_badges',
 		array(
-			'capability' => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+			'capability' => Badge_Generator\REQUIRED_CAPABILITY,
 			'title'      => __( 'CampTix HTML Badges', 'wordcamporg' ),
 			'type'       => 'cbgSection'
 
@@ -69,7 +70,7 @@ function register_customizer_components( $wp_customize ) {
 		'settings'    => array(),
 		'type'        => 'button',
 		'priority'    => 1,
-		'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+		'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
 		'input_attrs' => array(
 			'class' => 'button button-primary',
 			'value' => __( 'Print', 'wordcamporg' ),
@@ -81,7 +82,7 @@ function register_customizer_components( $wp_customize ) {
 		'settings'    => array(),
 		'type'        => 'button',
 		'priority'    => 1,
-		'capability'  => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+		'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
 		'input_attrs' => array(
 			'class' => 'button button-secondary',
 			'value' => __( 'Reset to Default', 'wordcamporg' ),
@@ -95,7 +96,7 @@ function register_customizer_components( $wp_customize ) {
 		array(
 			'default'           => file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' ),
 			'type'              => 'option',
-			'capability'        => \CampTix\Badge_Generator\REQUIRED_CAPABILITY,
+			'capability'        => Badge_Generator\REQUIRED_CAPABILITY,
 			'transport'         => 'postMessage',
 			'sanitize_callback' => 'esc_textarea',
 			// todo high - esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
@@ -115,6 +116,23 @@ function register_customizer_components( $wp_customize ) {
 	);
 
 	// todo high - test that it saves modified css - looks good but haven't looked close
+}
+
+/**
+ * Get the URL for the HTML Badges section in the Customizer
+ *
+ * @return string
+ */
+function get_customizer_section_url() {
+	$url = add_query_arg(
+		array(
+			'autofocus[section]' => 'section_camptix_html_badges',
+			'url'                => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
+		),
+		admin_url( 'customize.php' )
+	);
+
+	return $url;
 }
 
 /**
@@ -199,7 +217,7 @@ function use_badges_template( $template ) {
 		return $template;
 	}
 
-	if ( ! current_user_can( \CampTix\Badge_Generator\REQUIRED_CAPABILITY ) ) {
+	if ( ! current_user_can( Badge_Generator\REQUIRED_CAPABILITY ) ) {
 		return $template;
 	}
 
