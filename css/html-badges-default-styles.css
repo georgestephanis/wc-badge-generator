@@ -20,11 +20,10 @@ html, body {
 .attendee:nth-of-type( even ) {
 	float: right;
 	page-break-after: always;
-	page-break-inside: avoid;
 }
 
 .badge {
-	padding: 4em 1em 1em;
+	padding: 4em 1em 1em 1em;
 	box-sizing: border-box;
 	height: 50%;
 	position: relative;

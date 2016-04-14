@@ -21,7 +21,6 @@ defined( 'WPINC' ) or die();
 			<li><?php _e( 'The Easiest method.',                                                                              'wordcamporg' ); ?></li>
 			<li><?php _e( 'Can be as simple as using the default design and printing at home.',                               'wordcamporg' ); ?></li>
 			<li><?php _e( 'Design is customizable by a designer or developer, but options are limited compared to InDesign.', 'wordcamporg' ); ?></li>
-			<li><?php _e( "Can't be taken to a professional printer.",                                                        'wordcamporg' ); ?></li>
 		</ul>
 
 		<a class="button button-primary" href="<?php echo esc_url( $html_customizer_url ); ?>">
@@ -41,7 +40,6 @@ defined( 'WPINC' ) or die();
 					'https://www.adobe.com/products/indesign.html'
 				); ?>
 			</li>
-			<li><?php _e( 'Printed by a professional printer, or at home.', 'wordcamporg' ); ?></li>
 		</ul>
 
 		<a class="button button-primary" href="<?php echo esc_url( $indesign_page_url ); ?>">
@@ -55,7 +53,7 @@ defined( 'WPINC' ) or die();
 		__(
 			'Regardless of which method you choose, you\'ll get the best results if you encourage attendees to create <a href="%s">Gravatar</a> accounts before you create the badges.
 			You can use <a href="%s">the Notify tool</a> to e-mail everyone.
-			Make sure to tell them to use the same e-mail address that they used when purchasing a ticket.',
+			Make sure to tell them to create their Gravatar account using the same e-mail address that provided when purchasing a ticket.',
 			'wordcamporg'
 		),
 		'https://gravatar.com',

@@ -2,6 +2,7 @@
 
 namespace CampTix\Badge_Generator;
 use \CampTix\Badge_Generator\HTML;
+
 defined( 'WPINC' ) or die();
 
 add_filter( 'camptix_menu_tools_tabs',   __NAMESPACE__ . '\add_badges_tab'     );

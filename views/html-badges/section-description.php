@@ -3,7 +3,7 @@
 namespace CampTix\Badge_Generator\HTML;
 defined( 'WPINC' ) or die();
 
-_e( 'Design and print attendee badges with HTML and CSS. ', 'wordcamporg' );
+_e( 'Create personalized attendee badges with HTML and CSS. ', 'wordcamporg' );
 
 ?>
 

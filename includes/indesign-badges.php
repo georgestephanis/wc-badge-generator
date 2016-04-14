@@ -3,6 +3,7 @@
 namespace CampTix\Badge_Generator\InDesign;
 use \CampTix\Badge_Generator;
 use \CampTix\Badge_Generator\HTML;
+
 defined( 'WPINC' ) or die();
 
 /*

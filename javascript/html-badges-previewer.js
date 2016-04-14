@@ -36,7 +36,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 			badgeStyleElement = $( '#' + badgeStyleID );
 		}
 
-		badgeStyleElement.text( newCSS ); // todo high - xss?
+		badgeStyleElement.text( newCSS );
 	};
 
 	self.initialize();

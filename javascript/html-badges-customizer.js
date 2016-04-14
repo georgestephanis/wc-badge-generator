@@ -101,8 +101,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * @param {object} event
 	 */
 	self.resetCSS = function( event ) {
-		api( self.cssSettingID ).set( self.defaultCSS );    // todo high - xss?
-		self.cmEditor.setValue(       self.defaultCSS );    // todo high - xss?
+		api( self.cssSettingID ).set( self.defaultCSS );
+		self.cmEditor.setValue(       self.defaultCSS );
 	};
 
 	api.bind( 'ready', self.initialize );

@@ -2,50 +2,8 @@
 
 namespace CampTix\Badge_Generator\HTML;
 use \CampTix\Badge_Generator;
+
 defined( 'WPINC' ) or die();
-
-/*
- * todo v1
- *
- * high - need someone to actually test printing, since i don't have a printer
- *
- * update handbook/plan docs
- * write a launch post for make/community
- * leave comment on george's post
- */
-
-/*
- * todo v2
- *
- * move help to a ? like menu/widget panels have. might need custom section markup for that.
- * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
- * - can create different badges for speakers, sponsors, etc by targeting `attendee.ticket-{ticket_slug}` and/or attendee.coupon-{coupon_slug}
- * - can target individual attendees with .attendee-{name} when need to tweak spedific badges. e.g., make a long name have smaller last name font size, etc
- * - can target first and last name seperatly
- * - if accidentally reset, hit ctrl-z inside textarea to undo
- * - note that normalize.css is enqueued before your styles. you can override them.
- * - assembly intstructions: cut, folder in half, attach lanyard (fold in half bit may not be intuitive, so should mention it)
- *
- * page-breaking issues in chrome/safari
- *  - lots of potential solutions on stackoverflow, but none worked so far.
- *  - may need to make font size and avatar size smaller, but prob not if can fix chrome page-break issues
- *  - want overflow:hiden in theory, but may mess up chrome page breaking
- *  - maybe try to build minimal snippet and work up from there until find problem
- *  - once that's fixed, move the section-description back to just being a string, rather than separate file. also remove browser warning.
- *
- * big spacing diff between firefox and chrome, despite normalize
- *  - have to fix page-break bug before this matters.
- *
- * improve the default design
- * add checkbox to include twitter, option for which image, option for name instead of image, etc
- * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
- *
- * shows sample image in admin page for both types.
- *	use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
- *	or maybe
- *	https://blogldc.s3.amazonaws.com/wp-content/uploads/2014/10/wordcamp_sf_mortenbadge.jpg
- *	https://ma.tt/files/2014/10/MCM_2862.jpg
- */
 
 add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components'   );
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_customizer_scripts'       );
@@ -73,8 +31,6 @@ function register_customizer_components( $wp_customize ) {
 			'description' => $section_description,
 		)
 	);
-
-	// todo better names for settings and controls. more descriptive
 
 	$wp_customize->add_control(
 		'cbg_print_badges',
@@ -114,7 +70,6 @@ function register_customizer_components( $wp_customize ) {
 			'capability'        => Badge_Generator\REQUIRED_CAPABILITY,
 			'transport'         => 'postMessage',
 			'sanitize_callback' => 'esc_textarea',
-			// todo high - esc_textarea fine for display, but on save need to run through our custom stuff in jetpack-tweaks, but disable the admin notice.
 		)
 	);
 
@@ -163,20 +118,21 @@ function enqueue_customizer_scripts() {
 		return;
 	}
 
-	// Enqueue CodeMirror script and style, but dequeue extraneous Jetpack scripts and styles
+	// Enqueue CodeMirror script and style
 	if ( ! is_callable( array( 'Jetpack_Custom_CSS', 'enqueue_scripts' ) ) ) {
 		require_once( JETPACK__PLUGIN_DIR . 'modules/custom-css/custom-css.php' );
 		define( 'SAFECSS_USE_ACE', true );
-		// todo or use jetpack builtin include/activate_module() ?
 	}
 
 	\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
 
+	// Dequeue extraneous Jetpack scripts and styles
 	wp_dequeue_script( 'postbox' );
 	wp_dequeue_script( 'custom-css-editor' );
 	wp_dequeue_style( 'custom-css-editor' );
 	wp_dequeue_script( 'jetpack-css-use-codemirror' );
 
+	// Enqueue our scripts
 	wp_enqueue_script(
 		'camptix-html-badges-customizer',
 		plugins_url( 'javascript/html-badges-customizer.js', __DIR__ ),
@@ -190,7 +146,6 @@ function enqueue_customizer_scripts() {
 		'cbgHtmlCustomizerData',
 		array(
 			'defaultCSS' => file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' ),
-			// todo high - esc_js or json_encode or something needed here? pretty sure it's safe at this point b/c localize_script() json-encodes it. maybe not later on though.
 		)
 	);
 }
@@ -306,8 +261,6 @@ function get_attendee_data( $attendee ) {
 
 /**
  * Remove all other styles from the Previewer, to avoid conflicts
- *
- * todo make dry w/ coming soon page?
  */
 function remove_all_previewer_styles() {
 	global $wp_styles;
@@ -372,7 +325,6 @@ function print_saved_styles() {
 
 	<style id="camptix-html-badges-css" type="text/css">
 		<?php echo esc_html( get_option( 'cbg_badge_css' ) ); ?>
-		/*  todo high - is this the correct escaping function? */
 	</style>
 
 	<?php

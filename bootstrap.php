@@ -2,7 +2,7 @@
 
 /*
  * Plugin Name: CampTix Badge Generator
- * Description: Generates attendee badges for printing in multiple formats.
+ * Description: Generates personalized attendee badges with HTML/CSS or InDesign.
  * Version:     0.1
  * Author:      WordCamp.org
  * Author URI:  http://wordcamp.org

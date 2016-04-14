@@ -9,12 +9,6 @@ defined( 'WPINC' ) or die();
 	<?php if ( has_custom_logo() ) : ?>
 		<?php the_custom_logo(); ?>
 
-		<?php
-		// todo show 4.5 site logo, etc. header image? maybe reuse some of default_single_og_image()?
-		// need to enable support for custom image regardless of current theme?
-		// they'll have different css classes, so make sure each one is set in the stylesheet
-		?>
-
 	<?php else : ?>
 		<h2 class="wordcamp-name">
 			<?php echo esc_html( get_wordcamp_name() ); ?>
@@ -25,9 +19,9 @@ defined( 'WPINC' ) or die();
 
 <figure>
 	<img
+	    class="attendee-avatar"
 		src="<?php echo esc_url( $attendee_data['avatar_url'] ); ?>"
 		alt="<?php echo esc_attr( strip_tags( $attendee_data['formatted_name'] ) ); ?>"
-	    class="attendee-avatar"
 	/>
 
 	<figcaption>
