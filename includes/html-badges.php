@@ -8,23 +8,6 @@ defined( 'WPINC' ) or die();
  * todo v1
  *
  * high - need someone to actually test printing, since i don't have a printer
- * high - test in all browsers
- *  - big spacing diff between firefox and chrome
- *  - also, and possibly related, page-breaking issues in chrome/safari
- *  - lots of potential solutions on stackoverflow, but none worked so far.
- *  - maybe just say 'use firefox' for v1. or maybe  try to build minimal snippet and work up from there until find problem
- *  - may need to make font size and avatar size smaller, but prob not if can fix chrome page-break issues
- *  - want overflow:hiden in theory, but may mess up chrome page breaking
- *
- * can use the ? icon like the Menus section does if too much help text
- * in help text
- * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
- * - can create different badges for speakers, sponsors, etc by targeting `attendee.ticket-{ticket_slug}` and/or attendee.coupon-{coupon_slug}
- * - can target individual attendees with .attendee-{name} when need to tweak spedific badges. e.g., make a long name have smaller last name font size, etc
- * - can target first and last name seperatly
- * - if accidentally reset, hit ctrl-z inside textarea to undo
- * - note that normalize.css is enqueued before your styles. you can override them.
- * - assembly intstructions: cut, folder in half, attach lanyard (fold in half bit may not be intuitive, so should mention it)
  *
  * update handbook/plan docs
  * write a launch post for make/community
@@ -34,15 +17,34 @@ defined( 'WPINC' ) or die();
 /*
  * todo v2
  *
+ * move help to a ? like menu/widget panels have. might need custom section markup for that.
+ * - link to notify tool to email people to sign up for gravatar w/ their camptix email addr
+ * - can create different badges for speakers, sponsors, etc by targeting `attendee.ticket-{ticket_slug}` and/or attendee.coupon-{coupon_slug}
+ * - can target individual attendees with .attendee-{name} when need to tweak spedific badges. e.g., make a long name have smaller last name font size, etc
+ * - can target first and last name seperatly
+ * - if accidentally reset, hit ctrl-z inside textarea to undo
+ * - note that normalize.css is enqueued before your styles. you can override them.
+ * - assembly intstructions: cut, folder in half, attach lanyard (fold in half bit may not be intuitive, so should mention it)
+ *
+ * page-breaking issues in chrome/safari
+ *  - lots of potential solutions on stackoverflow, but none worked so far.
+ *  - may need to make font size and avatar size smaller, but prob not if can fix chrome page-break issues
+ *  - want overflow:hiden in theory, but may mess up chrome page breaking
+ *  - maybe try to build minimal snippet and work up from there until find problem
+ *  - once that's fixed, move the section-description back to just being a string, rather than separate file. also remove browser warning.
+ *
+ * big spacing diff between firefox and chrome, despite normalize
+ *  - have to fix page-break bug before this matters.
+ *
+ * improve the default design
+ * add checkbox to include twitter, option for which image, option for name instead of image, etc
+ * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
+ *
  * shows sample image in admin page for both types.
  *	use wcsf14, see if can find originals or ask jan. maybe in a8c design repo
  *	or maybe
  *	https://blogldc.s3.amazonaws.com/wp-content/uploads/2014/10/wordcamp_sf_mortenbadge.jpg
  *	https://ma.tt/files/2014/10/MCM_2862.jpg
- *
- * improve the default design
- * add checkbox to include twitter, option for which image, option for name instead of image, etc
- * - can use the [gear] icon like the Menus section does for options like including twitter field, etc
  */
 
 add_action( 'customize_register',    __NAMESPACE__ . '\register_customizer_components'   );
@@ -58,21 +60,21 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  * @param \WP_Customize_Manager $wp_customize
  */
 function register_customizer_components( $wp_customize ) {
+	ob_start();
+	require_once( dirname( __DIR__ ) . '/views/html-badges/section-description.php' );
+	$section_description = ob_get_clean();
+
 	$wp_customize->add_section(
 		'camptix_html_badges',
 		array(
-			'capability' => Badge_Generator\REQUIRED_CAPABILITY,
-			'title'      => __( 'CampTix HTML Badges', 'wordcamporg' ),
-			'type'       => 'cbgSection'
-
-			//'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
-			//  // todo probably move this to ? icon, to save space.
-			// looks like need to create custom section markup for that, b/c only panels do that by default.
-			// worth spending a bit more time checking, though, just in case
+			'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
+			'type'        => 'cbgSection',
+			'title'       => __( 'CampTix HTML Badges', 'wordcamporg' ),
+			'description' => $section_description,
 		)
 	);
 
-	// todo better names for settings and controls. prefix instead of entire name, more descriptive
+	// todo better names for settings and controls. more descriptive
 
 	$wp_customize->add_control(
 		'cbg_print_badges',
@@ -117,14 +119,12 @@ function register_customizer_components( $wp_customize ) {
 	);
 
 	$wp_customize->add_control(
-		'cbg_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel. need to update js too.
+		'cbg_badge_css',
 		array(
-			'type'        => 'textarea',
-			'section'     => 'camptix_html_badges',
-			'priority'    => 2,
-			'label'       => __( 'Customize Badge CSS', 'wordcamporg' ),
-
-			//'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
+			'section'  => 'camptix_html_badges',
+			'type'     => 'textarea',
+			'priority' => 2,
+			'label'    => __( 'Customize Badge CSS', 'wordcamporg' ),
 		)
 	);
 }
@@ -174,8 +174,7 @@ function enqueue_customizer_scripts() {
 
 	wp_dequeue_script( 'postbox' );
 	wp_dequeue_script( 'custom-css-editor' );
-	//wp_dequeue_style( 'custom-css-editor' );           //todo high - sometimes breaks
-	//wp_dequeue_style( 'jetpack-css-use-codemirror' );  //todo sometimes breaks
+	wp_dequeue_style( 'custom-css-editor' );
 	wp_dequeue_script( 'jetpack-css-use-codemirror' );
 
 	wp_enqueue_script(
@@ -262,11 +261,7 @@ function render_badges_template() {
 		'post_type'      => 'tix_attendee',
 		'posts_per_page' => -1,
 		'orderby'        => 'title',
-		'cache_results'  => false,  // todo necessary?
 	) );
-	
-	// Disable object cache for prepared metadata.
-	$camptix->filter_post_meta = $camptix->prepare_metadata_for( $attendees );  // todo necessary?
 
 	require( dirname( __DIR__ ) . '/views/html-badges/template-badges.php' );
 }
@@ -375,9 +370,9 @@ function print_saved_styles() {
 
 	?>
 
-	<!-- todo rename to better id,update everywhere -->
 	<style id="camptix-html-badges-css" type="text/css">
-		<?php echo esc_html( get_option( 'cbg_badge_css' ) ); // todo high - is this the correct escaping function? ?>
+		<?php echo esc_html( get_option( 'cbg_badge_css' ) ); ?>
+		/*  todo high - is this the correct escaping function? */
 	</style>
 
 	<?php

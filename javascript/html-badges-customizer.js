@@ -17,9 +17,10 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 * Initialize
 	 */
 	self.initialize = function() {
-		api.section( self.sectionID ).container.bind( 'expanded',  self.loadBadgesPage   );
-		api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage );
-		api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror  );
+		api.section( self.sectionID ).container.bind( 'expanded',  self.loadBadgesPage     );
+		api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage   );
+		api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror    );
+		api.section( self.sectionID ).container.bind( 'expanded',  self.showBrowserWarning );
 
 		$( '#customize-control-cbg_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
 		$( '#customize-control-cbg_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
@@ -67,6 +68,18 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 		self.cmEditor.on( 'change', function() {
 			api( self.cssSettingID ).set( self.cmEditor.getValue() );
 		} );
+	};
+
+	/**
+	 * Show the browser warning to non-Gecko based browsers
+	 *
+	 * @param {object} event
+	 */
+	self.showBrowserWarning = function( event ) {
+		// Rendering engine string must include the / to prevent matching things like "like Gecko" in Chrome/Safari
+		if ( navigator.userAgent.toLowerCase().indexOf( 'gecko/' ) === -1 ) {
+			$( '#cbg-firefox-recommended' ).removeClass( 'hidden' );
+		}
 	};
 
 	/**
