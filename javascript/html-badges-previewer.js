@@ -9,7 +9,7 @@ wp.customize.CampTixHtmlBadgesPreviewer = ( function( $, api ) {
 	 * Initialize
 	 */
 	self.initialize = function() {
-		api( 'setting_camptix_html_badge_css', function( value ) {
+		api( 'cbg_badge_css', function( value ) {
 			value.bind( self.updateCSS );
 		} );
 	};

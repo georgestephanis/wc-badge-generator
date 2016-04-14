@@ -2,8 +2,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	'use strict';
 
 	var self = {
-		sectionID    : 'section_camptix_html_badges',
-		cssSettingID : 'setting_camptix_html_badge_css',
+		sectionID    : 'camptix_html_badges',
+		cssSettingID : 'cbg_badge_css',
 		siteURL      : window.location.protocol + '//' + window.location.hostname,
 		cmEditor     : null
 	};
@@ -21,8 +21,8 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 		api.section( self.sectionID ).container.bind( 'collapsed', self.unloadBadgesPage );
 		api.section( self.sectionID ).container.bind( 'expanded',  self.setupCodeMirror  );
 
-		$( '#customize-control-cbg_control_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
-		$( '#customize-control-cbg_control_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
+		$( '#customize-control-cbg_print_badges' ).find( 'input[type=button]' ).click( self.printBadges );
+		$( '#customize-control-cbg_reset_css'    ).find( 'input[type=button]' ).click( self.resetCSS    );
 	};
 
 	/**
@@ -54,7 +54,7 @@ wp.customize.CampTixHtmlBadgesCustomizer = ( function( $, api ) {
 	 */
 	self.setupCodeMirror = function( event ) {
 		self.cmEditor = CodeMirror.fromTextArea(
-			$( '#customize-control-setting_camptix_html_badge_css' ).find( 'textarea' ).get(0),
+			$( '#customize-control-cbg_badge_css' ).find( 'textarea' ).get(0),
 			{
 				tabSize        : 2,
 				indentWithTabs : true,

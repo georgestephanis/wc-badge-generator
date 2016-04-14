@@ -59,46 +59,53 @@ add_filter( 'template_include',      __NAMESPACE__ . '\use_badges_template'     
  */
 function register_customizer_components( $wp_customize ) {
 	$wp_customize->add_section(
-		'section_camptix_html_badges',
+		'camptix_html_badges',
 		array(
 			'capability' => Badge_Generator\REQUIRED_CAPABILITY,
 			'title'      => __( 'CampTix HTML Badges', 'wordcamporg' ),
 			'type'       => 'cbgSection'
 
-			//'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),  // todo probably move this to ? icon, to save space
+			//'description' => __( 'Design attendee badges with HTML and CSS.', 'wordcamporg' ),
+			//  // todo probably move this to ? icon, to save space.
+			// looks like need to create custom section markup for that, b/c only panels do that by default.
+			// worth spending a bit more time checking, though, just in case
 		)
 	);
 
 	// todo better names for settings and controls. prefix instead of entire name, more descriptive
 
-	$wp_customize->add_control( 'cbg_control_print_badges', array(
-		'section'     => 'section_camptix_html_badges',
-		'settings'    => array(),
-		'type'        => 'button',
-		'priority'    => 1,
-		'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
-		'input_attrs' => array(
-			'class' => 'button button-primary',
-			'value' => __( 'Print', 'wordcamporg' ),
-		),
-	) );
+	$wp_customize->add_control(
+		'cbg_print_badges',
+		array(
+			'section'     => 'camptix_html_badges',
+			'settings'    => array(),
+			'type'        => 'button',
+			'priority'    => 1,
+			'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
+			'input_attrs' => array(
+				'class' => 'button button-primary',
+				'value' => __( 'Print', 'wordcamporg' ),
+			),
+		)
+	);
 
-	$wp_customize->add_control( 'cbg_control_reset_css', array(
-		'section'     => 'section_camptix_html_badges',
-		'settings'    => array(),
-		'type'        => 'button',
-		'priority'    => 1,
-		'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
-		'input_attrs' => array(
-			'class' => 'button button-secondary',
-			'value' => __( 'Reset to Default', 'wordcamporg' ),
-		),
-	) );
-
-	// todo remove 'setting_', 'control_', etc prefixes to be consistent w/ core?
+	$wp_customize->add_control(
+		'cbg_reset_css',
+		array(
+			'section'     => 'camptix_html_badges',
+			'settings'    => array(),
+			'type'        => 'button',
+			'priority'    => 1,
+			'capability'  => Badge_Generator\REQUIRED_CAPABILITY,
+			'input_attrs' => array(
+				'class' => 'button button-secondary',
+				'value' => __( 'Reset to Default', 'wordcamporg' ),
+			),
+		)
+	);
 
 	$wp_customize->add_setting(
-		'setting_camptix_html_badge_css',
+		'cbg_badge_css',
 		array(
 			'default'           => file_get_contents( dirname( __DIR__ ) . '/css/html-badges-default-styles.css' ),
 			'type'              => 'option',
@@ -110,10 +117,10 @@ function register_customizer_components( $wp_customize ) {
 	);
 
 	$wp_customize->add_control(
-		'setting_camptix_html_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel. need to update js too.
+		'cbg_badge_css',   // todo shouldn't this be control_... ? but then it doesn't expand panel. need to update js too.
 		array(
 			'type'        => 'textarea',
-			'section'     => 'section_camptix_html_badges',
+			'section'     => 'camptix_html_badges',
 			'priority'    => 2,
 			'label'       => __( 'Customize Badge CSS', 'wordcamporg' ),
 
@@ -130,7 +137,7 @@ function register_customizer_components( $wp_customize ) {
 function get_customizer_section_url() {
 	$url = add_query_arg(
 		array(
-			'autofocus[section]' => 'section_camptix_html_badges',
+			'autofocus[section]' => 'camptix_html_badges',
 			'url'                => rawurlencode( add_query_arg( 'camptix-badges', '', site_url() ) ),
 		),
 		admin_url( 'customize.php' )
@@ -140,11 +147,19 @@ function get_customizer_section_url() {
 }
 
 /**
+ * Check if the current page request is in the Customizer
+ *
+ * @return bool
+ */
+function is_customizer_request() {
+	return isset( $GLOBALS['wp_customize'] );
+}
+
+/**
  * Enqueue scripts and styles for the Customizer
  */
 function enqueue_customizer_scripts() {
-	if ( false ) {
-		// todo only in customizer  -- is there another method for that?
+	if ( ! is_customizer_request() ) {
 		return;
 	}
 
@@ -185,8 +200,7 @@ function enqueue_customizer_scripts() {
  * Print styles for the Customizer
  */
 function print_customizer_styles() {
-	if ( false ) {
-		// todo only in customizer  -- is there another method for that?
+	if ( ! is_customizer_request() ) {
 		return;
 	}
 
@@ -314,8 +328,6 @@ function remove_all_previewer_styles() {
 	remove_all_actions( 'wp_print_styles' );
 
 	remove_action( 'wp_head', array( 'Jetpack_Custom_CSS', 'link_tag' ), 101 );
-
-	// todo high - remove remote-css?
 }
 
 /**
@@ -365,7 +377,7 @@ function print_saved_styles() {
 
 	<!-- todo rename to better id,update everywhere -->
 	<style id="camptix-html-badges-css" type="text/css">
-		<?php echo esc_html( get_option( 'setting_camptix_html_badge_css' ) ); // todo high - is this the correct escaping function? ?>
+		<?php echo esc_html( get_option( 'cbg_badge_css' ) ); // todo high - is this the correct escaping function? ?>
 	</style>
 
 	<?php
