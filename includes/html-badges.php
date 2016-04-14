@@ -120,8 +120,6 @@ function register_customizer_components( $wp_customize ) {
 			//'description' => 'add instructions here?'   // todo probably move this to ? icon, to save space
 		)
 	);
-
-	// todo high - test that it saves modified css - looks good but haven't looked close
 }
 
 /**
@@ -151,7 +149,12 @@ function enqueue_customizer_scripts() {
 	}
 
 	// Enqueue CodeMirror script and style, but dequeue extraneous Jetpack scripts and styles
-	// todo high - check if callable, if not, then require()
+	if ( ! is_callable( array( 'Jetpack_Custom_CSS', 'enqueue_scripts' ) ) ) {
+		require_once( JETPACK__PLUGIN_DIR . 'modules/custom-css/custom-css.php' );
+		define( 'SAFECSS_USE_ACE', true );
+		// todo or use jetpack builtin include/activate_module() ?
+	}
+
 	\Jetpack_Custom_CSS::enqueue_scripts( 'appearance_page_editcss' );
 
 	wp_dequeue_script( 'postbox' );

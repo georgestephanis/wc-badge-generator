@@ -7,6 +7,7 @@ html, body {
 	float: left;
 	width: 3.25in;
 	height: 9in;
+	overflow: hidden;
 	font-family: sans-serif;
 	text-align: center;
 	box-sizing: border-box;
@@ -19,6 +20,7 @@ html, body {
 .attendee:nth-of-type( even ) {
 	float: right;
 	page-break-after: always;
+	page-break-inside: avoid;
 }
 
 .badge {
