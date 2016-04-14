@@ -44,6 +44,13 @@ if ( isset( $template ) && __FILE__ == $template ) {
 
 						<?php require( __DIR__ . '/template-part-badge-contents.php' ); ?>
 					</section>
+
+					<!-- These are arbitrary elements that you can use for any purpose -->
+					<div class="attendee-design-element-1"></div>
+					<div class="attendee-design-element-2"></div>
+					<div class="attendee-design-element-3"></div>
+					<div class="attendee-design-element-4"></div>
+					<div class="attendee-design-element-5"></div>
 				</article>
 			<?php endforeach; ?>
 		<?php endif; ?>

@@ -30,3 +30,10 @@ defined( 'WPINC' ) or die();
 		</h1>
 	</figcaption>
 </figure>
+
+<!-- These are arbitrary elements that you can use for any purpose -->
+<div class="badge-design-element-1"></div>
+<div class="badge-design-element-2"></div>
+<div class="badge-design-element-3"></div>
+<div class="badge-design-element-4"></div>
+<div class="badge-design-element-5"></div>
