@@ -11,7 +11,6 @@ html, body {
 	font-family: sans-serif;
 	text-align: center;
 	box-sizing: border-box;
-	border: 1px solid transparent;
 }
 
 .attendee:nth-of-type( odd ) {
@@ -26,7 +25,7 @@ html, body {
 /* Cut lines */
 .attendee:nth-of-type( 1 ),
 .attendee:nth-of-type( 2 ) {
-	border-color: #888888;
+	outline: 1px solid #888888;
 }
 
 .badge {
