@@ -22,8 +22,14 @@ html, body {
 	page-break-after: always;
 }
 
+/* Cut lines */
+.attendee:nth-of-type( 1 ),
+.attendee:nth-of-type( 2 ) {
+	outline: 1px solid #888888;
+}
+
 .badge {
-	padding: 4em 1em 1em 1em;
+	padding: 5em 1em 1em 1em;
 	box-sizing: border-box;
 	height: 50%;
 	position: relative;
@@ -31,7 +37,7 @@ html, body {
 
 .badge-back {
 	transform: rotate( 180deg );
-	border-top: 1px dashed #888;
+	border-top: 2px solid #888888;
 }
 
 .holepunch {
@@ -55,11 +61,11 @@ html, body {
 .attendee-avatar {
 	max-width: 70%;
 	height: auto;
-	margin: 1em 0 0 0;
+	margin: .5em 0 0 0;
 	border-radius: 50%;
 }
 
 .attendee-name {
-	margin: 1em 0 0 0;
+	margin: .5em 0 0 0;
 	font-size: 2.4em;
 }
